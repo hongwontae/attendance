@@ -1,0 +1,31 @@
+### Post Course
+POST http://localhost:3000/course/save
+Content-Type: application/json
+
+{
+    "name" : "JavaScript & React",
+    "description" : "Deep Running",
+    "startDate" : "2026-02-01",
+    "endDate" : "2026-08-01"
+}
+
+### Update Course
+PATCH http://localhost:3000/course/update/1
+Content-Type: application/json
+
+{
+    "name" : "Java & Spring Framework",
+    "description" : "Deep Deep Running"
+}
+
+
+### Find All Course
+GET http://localhost:3000/course/all
+
+
+### Find One Course
+GET http://localhost:3000/course/one/2
+
+
+### Delete One Course
+DELETE http://localhost:3000/course/remove/2

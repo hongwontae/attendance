@@ -1,0 +1,30 @@
+### Create Student
+Post http://localhost:3000/student/save
+Content-Type: application/json
+
+{
+    "name" : "HongWonTae",
+    "age" : "17",
+    "phone" : "010-2222-2222",
+    "pPhone" : "010-3333-3333",
+    "email" : "dnjsxoghd@naver.com",
+    "memo" : "Hello-World"
+}
+
+### Update Student
+PATCH http://localhost:3000/student/update/2
+Content-Type: application/json
+
+{
+    "age" : "18",
+    "phone" : "010-4444-3121"
+}
+
+### Find all Student
+GET http://localhost:3000/student/all
+
+### Find one Student
+Get http://localhost:3000/student/one/2
+
+### Delete One Student
+DELETE http://localhost:3000/student/remove/3
