@@ -18,20 +18,20 @@ export class StudentEntity {
   @Column()
   name: string;
 
-  @Column({nullable : true})
-  age : number;
+  @Column({type : 'integer',nullable : true})
+  age? : number | null;
 
-  @Column({ nullable: true })
-  phone: string;
+  @Column({type : 'text', nullable: true })
+  phone?: string | null;
 
-  @Column({nullable : true})
-  pPhone : string;
+  @Column({type : 'text',nullable : true})
+  pPhone? : string | null;
 
-  @Column({ nullable: true })
-  email: string;
+  @Column({type : 'text', nullable: true })
+  email? : string | null;
 
   @Column({ type: "text", nullable: true })
-  memo: string;
+  memo?: string | null;
 
   @CreateDateColumn()
   createdAt: Date;

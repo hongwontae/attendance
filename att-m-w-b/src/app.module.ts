@@ -7,14 +7,16 @@ import { AdminEntity } from './admin/admin.entity';
 import { StudentEntity } from './student/student.entity';
 import { CourseEntity } from './course/course.entity';
 import { AttendanceModule } from './attendance/attendance.module';
+import { AttendanceEntity } from './attendance/attendance.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type : 'sqlite',
       database : 'db.sqlite',
-      entities : [AdminEntity, StudentEntity, CourseEntity],
-      synchronize : true
+      entities : [AdminEntity, StudentEntity, CourseEntity, AttendanceEntity],
+      synchronize : true,
+      autoLoadEntities : true
     })
     , AdminModule, StudentModule, CourseModule, AttendanceModule],
   controllers: [],
