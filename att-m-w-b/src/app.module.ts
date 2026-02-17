@@ -8,6 +8,7 @@ import { StudentEntity } from './student/student.entity';
 import { CourseEntity } from './course/course.entity';
 import { AttendanceModule } from './attendance/attendance.module';
 import { AttendanceEntity } from './attendance/attendance.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { AttendanceEntity } from './attendance/attendance.entity';
       synchronize : true,
       autoLoadEntities : true
     })
-    , AdminModule, StudentModule, CourseModule, AttendanceModule],
+    , AdminModule, StudentModule, CourseModule, AttendanceModule, AuthModule],
   controllers: [],
   providers: [],
 })
