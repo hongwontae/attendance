@@ -21,6 +21,7 @@ export class AdminService {
       const admin = this.adminRepo.create({ email, password: hashedPassword });
 
       return await this.adminRepo.save(admin);
+      
     } catch (error) {
       if (
         error instanceof QueryFailedError &&

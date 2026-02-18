@@ -18,4 +18,4 @@ Content-Type: application/json
 
 ### Login
 GET http://localhost:3000/auth/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3NzEzMjczNzcsImV4cCI6MTc3MTMzMDk3N30.-duEo7-zwJc8xsj_AM2Z-EBciP6_BSP8xLx_070ShwA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3NzE0MTI0MjcsImV4cCI6MTc3MTQxNjAyN30.VbUHdunoIvsIxjYdlvUm5b-37vGbgEWUyPd2mhzfVZM
