@@ -1,22 +1,31 @@
-import { Controller, Post, UseGuards, Request, Get } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Res, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import type { Response, Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  // 로그인
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+
+    const { accessToken } = this.authService.login(req.user);
+
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      maxAge: 1000 * 60 * 15,
+    });
+
+    return { message: 'login success' };
   }
 
-  // 보호된 라우트
   @UseGuards(AuthGuard('jwt'))
   @Get('profile')
-  getProfile(@Request() req) {
+  getProfile(@Req() req: Request) {
     return req.user;
   }
 }

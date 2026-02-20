@@ -12,6 +12,10 @@ export class AdminService {
     private readonly adminRepo: Repository<AdminEntity>,
   ) {}
 
+  async findAdmin(email : string){
+    return await this.adminRepo.findOneBy({email});
+  }
+
   async createAdmin(adminInfo: CreateAdminDto) {
     try {
       const { email, password } = adminInfo;

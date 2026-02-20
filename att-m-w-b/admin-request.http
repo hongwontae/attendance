@@ -3,7 +3,7 @@ POST http://localhost:3000/admin/secure
 Content-Type: application/json
 
 {
-    "email" : "wlwlwl3121@naver.com",
+    "email" : "koala3121@naver.com",
     "password" : "q2tlxm@123"
 }
 

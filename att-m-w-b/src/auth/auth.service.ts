@@ -1,29 +1,34 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { AdminService } from 'src/admin/admin.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) {}
-
-  // 가짜 유저
-  private user = {
-    id: 1,
-    email: 'admin@test.com',
-    password: bcrypt.hashSync('1234', 10),
-  };
+  constructor(
+    private jwtService: JwtService,
+    private adminService: AdminService,
+  ) {}
 
   async validateUser(email: string, password: string) {
     console.log(email, password)
-    if (email !== this.user.email) return null;
+    const user = await this.adminService.findAdmin(email);
+    console.log(user)
+    if (!user) {
+      return null;
+    }
 
-    const isMatch = await bcrypt.compare(password, this.user.password);
-    if (!isMatch) return null;
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch)
 
-    return { id: this.user.id, email: this.user.email };
+    if(!isMatch){
+      return null;
+    }
+    
+    return user;
   }
 
-  async login(user: any) {
+   login(user: any) {
     const payload = { sub: user.id, email: user.email };
 
     return {
