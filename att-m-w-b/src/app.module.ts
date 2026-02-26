@@ -9,9 +9,14 @@ import { CourseEntity } from './course/course.entity';
 import { AttendanceModule } from './attendance/attendance.module';
 import { AttendanceEntity } from './attendance/attendance.entity';
 import { AuthModule } from './auth/auth.module';
+import {ConfigModule} from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal : true,
+      envFilePath : `.env.${process.env.NODE_ENV}`
+    }),
     TypeOrmModule.forRoot({
       type : 'sqlite',
       database : 'db.sqlite',

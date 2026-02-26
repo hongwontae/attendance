@@ -22,7 +22,7 @@ export class CourseEntity {
   description?: string | null;
 
   @Column({ type: 'date', nullable: true })
-  startDate?: string | null;
+  startDate?: Date | null;
 
   @Column({ type: 'date', nullable: true })
   endDate?: Date | null;

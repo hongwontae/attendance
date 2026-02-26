@@ -32,6 +32,16 @@ function App() {
     console.log(resData);
   }
 
+  async function protectRoute(){
+    const response = await fetch('http://localhost:3000/auth/profile',{
+      method : 'GET',
+      credentials : 'include'
+    })
+
+    const resData = await response.json();
+    console.log(resData);
+  }
+
   return (
     <>
       <div className="w-screen">
@@ -52,6 +62,7 @@ function App() {
         </div>
         <div className="w-full flex justify-center mt-4">
           <button className="border p-2 rounded" onClick={sendServer}>Send</button>
+          <button className="border p-2 rounded" onClick={protectRoute}>Protected Route Acess</button>
         </div>
       </div>
     </>
