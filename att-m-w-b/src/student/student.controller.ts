@@ -29,24 +29,24 @@ export class StudentController {
   @Patch('update/:id')
   @UsePipes(new ValidationPipe({whitelist : true, transform : true}))
   async updateStudent(@Param('id', ParseIntPipe) id : number, @Body() body : UpdateStudentDto){
-    const upStu = await this.studentService.updateStudent(body, id);
+    const upStu = await this.studentService.updateStudent(body, id, 1);
     return upStu
   }
 
   @Get('all')
   async findAllStudent(){
-    const allStu = await this.studentService.findAllStudent();
+    const allStu = await this.studentService.findAllStudent(1);
     return allStu;
   }
 
   @Get('one/:id')
   async findOneStudent(@Param('id', ParseIntPipe) id : number){
-    return await this.studentService.findOneStudent(id);
+    return await this.studentService.findOneStudent(id, 1);
   }
 
   @Delete('remove/:id')
   async deleteOneStudent(@Param('id', ParseIntPipe) id : number){
-      const deleteOneStu = await this.studentService.deleteOneStudnet(id);
+      const deleteOneStu = await this.studentService.deleteOneStudnet(id, 1);
       return deleteOneStu;
   }
 

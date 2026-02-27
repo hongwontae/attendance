@@ -12,28 +12,28 @@ export class CourseController {
     @Post('save')
     @UsePipes(new ValidationPipe({whitelist : true, transform : true}))
     async createCourse(@Body() body : CreateCourseDto){
-        return await this.courseService.createCourse(body);
+        return await this.courseService.createCourse(body, 1);
     }
 
     @Patch('update/:id')
     @UsePipes(new ValidationPipe({whitelist : true, transform : true}))
     async updateCourse(@Body() body : UpdateCourseDto,@Param('id',ParseIntPipe) id : number){
-        return await this.courseService.updateCourse(body, id);
+        return await this.courseService.updateCourse(body, id, 1);
     }
 
     @Get('all')
     async findAllCourse(){
-        return await this.courseService.findAllCourse();
+        return await this.courseService.findAllCourse(1);
     }
 
     @Get('one/:id')
     async findOneCourse(@Param('id', ParseIntPipe) id : number){
-        return await this.courseService.findOneCourse(id);
+        return await this.courseService.findOneCourse(id, 1);
     }
 
     @Delete('remove/:id')
     async deleteOneCourse(@Param('id', ParseIntPipe) id : number){
-        return await this.courseService.deleteCourse(id);
+        return await this.courseService.deleteCourse(id,1);
     }
 
 }

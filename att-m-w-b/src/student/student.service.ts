@@ -4,64 +4,85 @@ import { StudentEntity } from './student.entity';
 import { Repository } from 'typeorm';
 import { CreateStudentDto } from './dto/create-student-dto';
 import { UpdateStudentDto } from './dto/update-student-dto';
+import { AdminService } from 'src/admin/admin.service';
 
 @Injectable()
 export class StudentService {
+  constructor(
+    @InjectRepository(StudentEntity)
+    private studentRepo: Repository<StudentEntity>,
+    private readonly adminService: AdminService,
+  ) {}
 
-    constructor(
-        @InjectRepository(StudentEntity) private studentRepo : Repository<StudentEntity>
-    ){}
+  async createStudent(studentInfo: CreateStudentDto) {
+    // fk를 가진 엔티티 자체를 만들어서 admin fk 키에 추가해야 제대로 fk가 생성됩니다.
+    const admin = await this.adminService.findAdminId(studentInfo.adminId);
 
-    async createStudent(studentInfo : CreateStudentDto){
-        const student = this.studentRepo.create(studentInfo);
-        const savedStudent = await this.studentRepo.save(student);
-        return savedStudent
+    if (!admin) {
+      throw new NotFoundException('Admin Not Found');
     }
 
-    async updateStudent(updateStudentInfo : UpdateStudentDto, id : number){
+    const student = this.studentRepo.create({
+      ...studentInfo,
+      admin: admin,
+    });
 
-        const findStudent = await this.studentRepo.findOneBy({id});
+    const savedStudent = await this.studentRepo.save(student);
+    return savedStudent;
+  }
 
-        if(!findStudent){
-            throw new NotFoundException('No Student');
-        }
+  async updateStudent(
+    updateStudentInfo: UpdateStudentDto,
+    id: number,
+    adminId: number,
+  ) {
 
-        // merge -> Object.assign을 내부적으로 사용하지만 typeorm의 cycle에 포함되어 안정적
-        this.studentRepo.merge(findStudent, updateStudentInfo);
+    const whereCondition = {
+      id,
+      admin: { id: adminId },
+    };
 
-        return await this.studentRepo.save(findStudent);
-        
+    const result = await this.studentRepo.update(
+      whereCondition,
+      updateStudentInfo,
+    );
+
+    if (!result.affected) {
+      throw new NotFoundException('업데이트가 실행되지 않았습니다.');
     }
 
-    async findAllStudent(){
-        const allStudent = await this.studentRepo.find();
+    return this.studentRepo.findOne({ where: whereCondition });
+  }
 
-        if(!allStudent){
-            throw new NotFoundException('데이터를 추가하지 않았습니다.')
-        }
-        
-        return allStudent;
+  async findAllStudent(adminId : number) {
+    const allStudent = await this.studentRepo.find({
+        where : {admin : {id : adminId}}
+    });
+
+    if (!allStudent) {
+      throw new NotFoundException('데이터를 추가하지 않았습니다.');
     }
 
-    async findOneStudent(id : number){
-        const oneStudent = await this.studentRepo.findOneBy({id});
+    return allStudent;
+  }
 
-        if(!oneStudent){
-            throw new NotFoundException('찾고자 하는 학생이 없습니다.')
-        }
+  async findOneStudent(id: number, adminId : number) {
+    const oneStudent = await this.studentRepo.findOneBy({ id, admin : {id : adminId} });
 
-        return oneStudent;
+    if (!oneStudent) {
+      throw new NotFoundException('찾고자 하는 학생이 없습니다.');
     }
 
-    async deleteOneStudnet(id : number){
-        const oneStudent = await this.studentRepo.findOneBy({id});
-        
-        if(!oneStudent){
-            throw new NotFoundException('삭제하고자 하는 학생이 없습니다.')
-        }
+    return oneStudent;
+  }
 
-        return await this.studentRepo.remove(oneStudent)
-        
+  async deleteOneStudnet(id: number, adminId : number) {
+    const oneStudent = await this.studentRepo.findOneBy({ id, admin : {id : adminId}});
+
+    if (!oneStudent) {
+      throw new NotFoundException('삭제하고자 하는 학생이 없습니다.');
     }
 
+    return await this.studentRepo.remove(oneStudent);
+  }
 }

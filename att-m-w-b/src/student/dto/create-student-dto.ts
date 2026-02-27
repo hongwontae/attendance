@@ -10,6 +10,10 @@ export class CreateStudentDto {
     name : string;
 
     @Type(()=>Number)
+    @IsNumber()
+    adminId : number;
+
+    @Type(()=>Number)
     @IsOptional()
     @IsNumber()
     age? : number;

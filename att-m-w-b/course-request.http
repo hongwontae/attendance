@@ -15,7 +15,8 @@ Content-Type: application/json
 
 {
     "name" : "Java & Spring Framework",
-    "description" : "Deep Deep Running"
+    "description" : "Deep Deep Running",
+
 }
 
 
@@ -24,8 +25,8 @@ GET http://localhost:3000/course/all
 
 
 ### Find One Course
-GET http://localhost:3000/course/one/2
+GET http://localhost:3000/course/one/1
 
 
 ### Delete One Course
-DELETE http://localhost:3000/course/remove/2
+DELETE http://localhost:3000/course/remove/1

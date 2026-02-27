@@ -16,6 +16,10 @@ export class AdminService {
     return await this.adminRepo.findOneBy({email});
   }
 
+  async findAdminId(id : number){
+    return await this.adminRepo.findOneBy({id : id});
+  }
+
   async createAdmin(adminInfo: CreateAdminDto) {
     try {
       const { email, password } = adminInfo;

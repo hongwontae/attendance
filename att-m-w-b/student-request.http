@@ -3,6 +3,7 @@ Post http://localhost:3000/student/save
 Content-Type: application/json
 
 {
+    "adminId" : "1",
     "name" : "HongWonTae",
     "age" : "17",
     "phone" : "010-2222-2222",
@@ -12,19 +13,20 @@ Content-Type: application/json
 }
 
 ### Update Student
-PATCH http://localhost:3000/student/update/2
+PATCH http://localhost:3000/student/update/1
 Content-Type: application/json
 
 {
     "age" : "18",
-    "phone" : "010-4444-3121"
+    "phone" : "010-4444-3121",
+    "pPhone" : "010-3333-3241"
 }
 
 ### Find all Student
 GET http://localhost:3000/student/all
 
 ### Find one Student
-Get http://localhost:3000/student/one/2
+Get http://localhost:3000/student/one/1
 
 ### Delete One Student
-DELETE http://localhost:3000/student/remove/3
+DELETE http://localhost:3000/student/remove/1
