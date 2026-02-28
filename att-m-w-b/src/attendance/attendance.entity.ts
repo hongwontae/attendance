@@ -8,6 +8,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -18,12 +19,13 @@ export enum AttendanceStatus {
 }
 
 @Entity('attendance')
+@Unique('UQ_ATTENDANCE_PER_DAY', ['student', 'course', 'date'])
 export class AttendanceEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'date' })
-  date: Date;
+  date: string;
 
   @Column({
     type: 'simple-enum',

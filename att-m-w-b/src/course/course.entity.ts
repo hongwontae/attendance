@@ -22,10 +22,10 @@ export class CourseEntity {
   description?: string | null;
 
   @Column({ type: 'date', nullable: true })
-  startDate?: Date | null;
+  startDate?: string | null;
 
   @Column({ type: 'date', nullable: true })
-  endDate?: Date | null;
+  endDate?: string | null;
 
   @CreateDateColumn()
   createdAt: Date;

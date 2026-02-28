@@ -1,0 +1,24 @@
+### post attendacne
+POST http://localhost:3000/attendance/create/att
+Content-Type: application/json
+
+{
+    "studentId" : "2",
+    "courseId" : "1",
+    "date" : "2026-03-06",
+    "status" : "present"
+}
+
+
+### get student att
+POST http://localhost:3000/attendance/one/student
+Content-Type: application/json
+
+{
+    "courseId" : "1",
+    "studentId" : "1"
+}
+
+
+### get st
+GET http://localhost:3000/attendance/find/one/1
