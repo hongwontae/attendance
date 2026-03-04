@@ -28,4 +28,19 @@ export class AuthController {
   getProfile(@Req() req: Request) {
     return req.user;
   }
+
+  @Post('/logout')
+  logout(@Res({passthrough : true}) res : Response ){
+
+    res.clearCookie('accessToken', {
+      httpOnly : true,
+      sameSite : 'lax',
+      secure : false,
+      maxAge : 1000*60*15,
+    });
+
+    return {message : '로그아웃 성공'}
+
+  }
+
 }

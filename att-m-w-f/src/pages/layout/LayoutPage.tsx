@@ -1,8 +1,12 @@
+import { Outlet } from "react-router";
+
 function LayoutPage(){
 
     return(
         <>
-            <div>Layout</div>
+            <div>
+                <Outlet></Outlet>
+            </div>
         </>
     )
 }
