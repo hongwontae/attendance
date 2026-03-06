@@ -10,6 +10,7 @@ import { AttendanceModule } from './attendance/attendance.module';
 import { AttendanceEntity } from './attendance/attendance.entity';
 import { AuthModule } from './auth/auth.module';
 import {ConfigModule} from '@nestjs/config';
+import { EnrollmentModule } from './enrollment/enrollment.module';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import {ConfigModule} from '@nestjs/config';
       synchronize : true,
       autoLoadEntities : true
     })
-    , AdminModule, StudentModule, CourseModule, AttendanceModule, AuthModule],
+    , AdminModule, StudentModule, CourseModule, AttendanceModule, AuthModule, EnrollmentModule],
   controllers: [],
   providers: [],
 })

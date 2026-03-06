@@ -1,5 +1,6 @@
 import { AdminEntity } from 'src/admin/admin.entity';
 import { AttendanceEntity } from 'src/attendance/attendance.entity';
+import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
 import {
   Column,
   CreateDateColumn,
@@ -38,6 +39,9 @@ export class CourseEntity {
     onDelete: 'CASCADE',
   })
   admin: AdminEntity;
+
+  @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment.course)
+  enrollments: EnrollmentEntity[];
 
   // 🔥 attendance와 연결
   @OneToMany(() => AttendanceEntity, (attendance) => attendance.course)

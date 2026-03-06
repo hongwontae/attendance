@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { useAuthStore } from "../../store/auth-store";
 import { QueryClient } from "@tanstack/react-query";
+import { logoutApi } from "../../api/logout-api";
 
 function LogoutPage() {
   const queryClient = new QueryClient();
@@ -8,10 +9,7 @@ function LogoutPage() {
   const setUser = useAuthStore((state) => state.setUser);
 
   const logoutHandler = async () => {
-    await fetch("http://localhost:3000/auth/logout", {
-      method: "post",
-      credentials: "include",
-    });
+    logoutApi();
     queryClient.clear();
     setUser(null);
     navigate("/");

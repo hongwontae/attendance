@@ -1,5 +1,5 @@
 import { Navigate } from "react-router";
-import { useAuthStore } from "../store/auth-store";
+import { useAuthStore } from "../../store/auth-store";
 
 type Props = {
   children: React.ReactNode;

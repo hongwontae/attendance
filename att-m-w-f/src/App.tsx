@@ -3,8 +3,9 @@ import LoginPage from "./pages/login/LoginPage";
 import LayoutPage from "./pages/layout/LayoutPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TestPage from "./pages/test/TestPage";
-import AppInitComponent from "./components/AppinitComponent";
-import ProtectRouter from "./components/ProtectRouter";
+import AppInitComponent from "./components/utils/AppinitComponent";
+import ProtectRouter from "./components/utils/ProtectRouter";
+import CoursePage from "./pages/course/CoursePage";
 
 function App() {
   const queryClient = new QueryClient();
@@ -20,6 +21,14 @@ function App() {
           element: (
             <ProtectRouter>
               <TestPage />
+            </ProtectRouter>
+          ),
+        },
+        {
+          path: "/course",
+          element: (
+            <ProtectRouter>
+              <CoursePage></CoursePage>
             </ProtectRouter>
           ),
         },
