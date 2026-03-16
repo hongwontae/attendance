@@ -1,5 +1,4 @@
 import { AdminEntity } from "src/admin/admin.entity";
-import { AttendanceEntity } from "src/attendance/attendance.entity";
 import { EnrollmentEntity } from "src/enrollment/enrollment.entity";
 import {
   Entity,
@@ -43,13 +42,11 @@ export class StudentEntity {
     // 🔥 admin과 연결
   @ManyToOne(() => AdminEntity, (admin) => admin.students, {
     onDelete: 'CASCADE',
+    nullable : false
   })
   admin: AdminEntity;
 
   @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment.student)
   enrollments: EnrollmentEntity[];  
 
-  // 🔥 attendance 연결
-  @OneToMany(() => AttendanceEntity, (attendance) => attendance.student)
-  attendances: AttendanceEntity[];
 }

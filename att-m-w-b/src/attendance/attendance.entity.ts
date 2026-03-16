@@ -1,6 +1,5 @@
 import { AdminEntity } from 'src/admin/admin.entity';
-import { CourseEntity } from 'src/course/course.entity';
-import { StudentEntity } from 'src/student/student.entity';
+import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
 import {
   Column,
   CreateDateColumn,
@@ -19,7 +18,7 @@ export enum AttendanceStatus {
 }
 
 @Entity('attendance')
-@Unique('UQ_ATTENDANCE_PER_DAY', ['student', 'course', 'date'])
+@Unique('UQ_ATTENDANCE_PER_DAY', ['enrollment', 'date'])
 export class AttendanceEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -39,24 +38,17 @@ export class AttendanceEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-    // 🔥 student 연결
-  @ManyToOne(() => StudentEntity, (student) => student.attendances, {
+  @ManyToOne(() => EnrollmentEntity, (enrollment) => enrollment.attendances, {
     onDelete: 'CASCADE',
+    nullable : false
   })
-  @JoinColumn({name : 'studentId'})
-  student : StudentEntity;
+  @JoinColumn({ name: 'enrollmentId' })
+  enrollment: EnrollmentEntity;
 
-  // 🔥 course 연결
-  @ManyToOne(() => CourseEntity, (course) => course.attendances, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({name : 'courseId'})
-  course: CourseEntity;
-
-  // 🔥 admin 연결 (데이터 격리용)
   @ManyToOne(() => AdminEntity, (admin) => admin.attendances, {
     onDelete: 'CASCADE',
+    nullable : false
   })
-  @JoinColumn({name : 'adminId'})
+  @JoinColumn({ name: 'adminId' })
   admin: AdminEntity;
 }

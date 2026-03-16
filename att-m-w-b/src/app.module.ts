@@ -11,6 +11,7 @@ import { AttendanceEntity } from './attendance/attendance.entity';
 import { AuthModule } from './auth/auth.module';
 import {ConfigModule} from '@nestjs/config';
 import { EnrollmentModule } from './enrollment/enrollment.module';
+import { EnrollmentEntity } from './enrollment/enrollment.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { EnrollmentModule } from './enrollment/enrollment.module';
     TypeOrmModule.forRoot({
       type : 'sqlite',
       database : 'db.sqlite',
-      entities : [AdminEntity, StudentEntity, CourseEntity, AttendanceEntity],
+      entities : [AdminEntity, StudentEntity, CourseEntity, AttendanceEntity, EnrollmentEntity],
       synchronize : true,
       autoLoadEntities : true
     })

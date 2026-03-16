@@ -1,4 +1,5 @@
 import { AdminEntity } from 'src/admin/admin.entity';
+import { AttendanceEntity } from 'src/attendance/attendance.entity';
 import { CourseEntity } from 'src/course/course.entity';
 import { StudentEntity } from 'src/student/student.entity';
 import {
@@ -9,6 +10,7 @@ import {
   UpdateDateColumn,
   Unique,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('enrollment')
@@ -26,6 +28,7 @@ export class EnrollmentEntity {
   // 🔥 Student 연결
   @ManyToOne(() => StudentEntity, (student) => student.enrollments, {
     onDelete: 'CASCADE',
+    nullable : false
   })
   @JoinColumn({ name: 'studentId' })
   student: StudentEntity;
@@ -33,6 +36,7 @@ export class EnrollmentEntity {
   // 🔥 Course 연결
   @ManyToOne(() => CourseEntity, (course) => course.enrollments, {
     onDelete: 'CASCADE',
+    nullable : false
   })
   @JoinColumn({ name: 'courseId' })
   course: CourseEntity;
@@ -40,7 +44,11 @@ export class EnrollmentEntity {
   // 🔥 Admin 연결 (데이터 격리)
   @ManyToOne(() => AdminEntity, (admin) => admin.enrollments, {
     onDelete: 'CASCADE',
+    nullable : false
   })
   @JoinColumn({ name: 'adminId' })
   admin: AdminEntity;
+
+  @OneToMany(() => AttendanceEntity, (attendance) => attendance.enrollment)
+  attendances: AttendanceEntity[];
 }

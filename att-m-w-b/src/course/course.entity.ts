@@ -43,7 +43,5 @@ export class CourseEntity {
   @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment.course)
   enrollments: EnrollmentEntity[];
 
-  // 🔥 attendance와 연결
-  @OneToMany(() => AttendanceEntity, (attendance) => attendance.course)
-  attendances: AttendanceEntity[];
+
 }
