@@ -6,6 +6,7 @@ import TestPage from "./pages/test/TestPage";
 import AppInitComponent from "./components/utils/AppinitComponent";
 import ProtectRouter from "./components/utils/ProtectRouter";
 import CoursePage from "./pages/course/CoursePage";
+import CourseDetail from "./components/course-components/CourseDetail";
 
 function App() {
   const queryClient = new QueryClient();
@@ -32,6 +33,14 @@ function App() {
             </ProtectRouter>
           ),
         },
+        {
+          path : '/course/:courseId',
+          element : (
+            <ProtectRouter>
+              <CourseDetail></CourseDetail>
+            </ProtectRouter>
+          )
+        }
       ],
     },
   ]);
