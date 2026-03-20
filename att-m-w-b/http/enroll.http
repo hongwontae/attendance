@@ -3,7 +3,7 @@ POST http://localhost:3000/enrollment/enroll/create
 Content-Type: application/json
 
 {
-    "studentId" : "1",
+    "studentId" : "8",
     "adminId" : "1",
     "courseId" : "1"
 }

@@ -31,9 +31,16 @@ export class CourseController {
         return await this.courseService.findOneCourse(id, 1);
     }
 
+    @Get('detail/:id')
+    async detailFindOneCourse(@Param('id', ParseIntPipe) id : number){
+        return await this.courseService.detailCourse(id);
+    }
+
     @Delete('remove/:id')
     async deleteOneCourse(@Param('id', ParseIntPipe) id : number){
         return await this.courseService.deleteCourse(id,1);
     }
+
+    
 
 }

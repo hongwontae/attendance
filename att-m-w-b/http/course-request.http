@@ -27,6 +27,9 @@ GET http://localhost:3000/course/all
 ### Find One Course
 GET http://localhost:3000/course/one/1
 
+### Find Detail Course and Join
+Get http://localhost:3000/course/detail/1
+
 
 ### Delete One Course
 DELETE http://localhost:3000/course/remove/1

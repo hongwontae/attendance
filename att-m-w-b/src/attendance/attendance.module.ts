@@ -7,7 +7,7 @@ import { StudentModule } from 'src/student/student.module';
 import { CourseModule } from 'src/course/course.module';
 
 @Module({
-  imports : [StudentModule, CourseModule ,TypeOrmModule.forFeature([AttendanceEntity])],
+  imports : [TypeOrmModule.forFeature([AttendanceEntity])],
   controllers: [AttendanceController],
   providers: [AttendanceService],
   exports : [AttendanceService]

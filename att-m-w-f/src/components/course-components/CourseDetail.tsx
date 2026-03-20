@@ -1,22 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
+import { getCourseDetailApi } from "../../api/course/get-course-detail-api";
 
 function CourseDetail(){
 
     const {courseId} = useParams();
 
-    useQuery({
+    const {data, isError, isLoading} = useQuery({
+        queryFn : ()=>{return getCourseDetailApi(Number(courseId))},
         queryKey : ['course', courseId],
         enabled : !!courseId,
-        
     })
+    
+    if(isError){
+        return <div>Error</div>
+    }
+
+    if(isLoading){
+        return <div>...Loading..</div>
+    }
 
 
 
     return(
         <>
             <article>
-                <h1>Course-Detail</h1>
+                <h1>{data?.name}</h1>
+                {data?.enrollments.map(({student})=>{
+                    return <Link to={`/course/${courseId}/student/${student.id}`}>
+                        {student.name} - {student.age} - {student.email}
+                    </Link>
+                })}
             </article>
         </>
     )

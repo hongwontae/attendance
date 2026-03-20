@@ -44,6 +44,14 @@ export class AttendanceService {
     return this.attRepo.remove(attOne)
   }
 
+  async findStudentAtt(courseId : number, studentId : number){
+    await this.attRepo.findOne({
+      where : {
+        
+      }
+    })
+  }
+
 
 
 

@@ -7,6 +7,7 @@ import { EnrollmentEntity } from './enrollment.entity';
 @Module({
   imports : [TypeOrmModule.forFeature([EnrollmentEntity])],
   controllers: [EnrollmentController],
-  providers: [EnrollmentService]
+  providers: [EnrollmentService],
+  exports : [TypeOrmModule]
 })
 export class EnrollmentModule {}
