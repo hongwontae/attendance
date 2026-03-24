@@ -14,7 +14,7 @@ function LoginPage() {
     mutationFn: loginApi,
     onSuccess: (data) => {
       setUser(data);
-      navigate("/test");
+      navigate("/student");
     },
     onError: () => {
       alert("로그인 실패");

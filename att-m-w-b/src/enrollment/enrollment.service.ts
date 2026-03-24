@@ -25,5 +25,16 @@ export class EnrollmentService {
         return await this.enrollmentRepo.save(registerdEnroll)
     }
 
+    async getEnrolledStudent(adminId : number){
+        return await this.enrollmentRepo.createQueryBuilder('enrollment')
+            .leftJoinAndSelect('enrollment.student', 'student')
+            .leftJoinAndSelect('enrollment.course', 'course')
+            .where('enrollment.adminId = :adminId', {adminId})
+            .orderBy('enrollment.courseId', 'ASC')
+            .addOrderBy('enrollment.createdAt', 'ASC')
+            .getMany()
+            
+    }
+
 
 }

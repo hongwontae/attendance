@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 
@@ -16,7 +16,12 @@ export class EnrollmentController {
 
         return await this.enrollmentService.enroll(body.studentId, body.courseId, body.adminId)
 
-    }  
+    }
+
+    @Get('enroll/allstu')
+    async getEnrollStu(){
+        return await this.enrollmentService.getEnrolledStudent(1)
+    }
 
 
 }

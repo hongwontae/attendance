@@ -1,4 +1,4 @@
-function StudentAtt(){
+function StudentDetail(){
 
     
 
@@ -9,4 +9,4 @@ function StudentAtt(){
     )
 }
 
-export default StudentAtt;
+export default StudentDetail;

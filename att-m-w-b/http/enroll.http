@@ -3,7 +3,11 @@ POST http://localhost:3000/enrollment/enroll/create
 Content-Type: application/json
 
 {
-    "studentId" : "9",
-    "adminId" : "2",
-    "courseId" : "3"
+    "studentId" : "10",
+    "adminId" : "1",
+    "courseId" : "1"
 }
+
+### Get ALL Stu
+GET http://localhost:3000/enrollment/enroll/allstu
+

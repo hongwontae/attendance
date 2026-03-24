@@ -36,7 +36,7 @@ export class CourseEntity {
 
   // 🔥 admin과 연결
   @ManyToOne(() => AdminEntity, (admin) => admin.courses, {
-    onDelete: 'CASCADE',
+    onDelete: 'CASCADE',  
   })
   admin: AdminEntity;
 

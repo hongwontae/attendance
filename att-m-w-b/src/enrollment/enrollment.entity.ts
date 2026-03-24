@@ -39,7 +39,7 @@ export class EnrollmentEntity {
     nullable : false
   })
   @JoinColumn({ name: 'courseId' })
-  course: CourseEntity;
+  course: CourseEntity; 
 
   // 🔥 Admin 연결 (데이터 격리)
   @ManyToOne(() => AdminEntity, (admin) => admin.enrollments, {
