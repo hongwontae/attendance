@@ -5,36 +5,32 @@ import { EnrollmentEntity } from './enrollment.entity';
 
 @Injectable()
 export class EnrollmentService {
+  constructor(
+    @InjectRepository(EnrollmentEntity)
+    private readonly enrollmentRepo: Repository<EnrollmentEntity>,
+  ) {}
 
-    constructor(
-        @InjectRepository(EnrollmentEntity) private readonly enrollmentRepo : Repository<EnrollmentEntity>
-    ){}
+  async enroll(studentId: number, courseId: number, adminId: number) {
+    const registerdEnroll = this.enrollmentRepo.create({
+      admin: { id: adminId },
+      student: { id: studentId },
+      course: { id: courseId },
+    });
 
-    async enroll(studentId : number, courseId : number, adminId : number){
-        const registerdEnroll = this.enrollmentRepo.create({
-            admin : {id : adminId},
-            student : {id : studentId},
-            course : {id : courseId}
-        })
-
-        if(!registerdEnroll){
-            throw new NotFoundException('등록되지 않았습니다.')
-        }
-
-
-        return await this.enrollmentRepo.save(registerdEnroll)
+    if (!registerdEnroll) {
+      throw new NotFoundException('등록되지 않았습니다.');
     }
 
-    async getEnrolledStudent(adminId : number){
-        return await this.enrollmentRepo.createQueryBuilder('enrollment')
-            .leftJoinAndSelect('enrollment.student', 'student')
-            .leftJoinAndSelect('enrollment.course', 'course')
-            .where('enrollment.adminId = :adminId', {adminId})
-            .orderBy('enrollment.courseId', 'ASC')
-            .addOrderBy('enrollment.createdAt', 'ASC')
-            .getMany()
-            
-    }
+    return await this.enrollmentRepo.save(registerdEnroll);
+  }
 
+  async getEnrolledStudent(adminId: number) {
+    return await this.enrollmentRepo
+      .createQueryBuilder('enrollment')
+      .leftJoinAndSelect('enrollment.student', 'student')
 
+      .where('enrollment.adminId = :adminId', { adminId })
+      .addOrderBy('enrollment.createdAt', 'ASC')
+      .getMany();
+  }
 }

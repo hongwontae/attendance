@@ -1,4 +1,3 @@
-import type { GetCourseType } from '../../types/course-type/get-course-type';
 import type {StudentType} from '../../types/student-type/student-type';
 
 type EnrollmentAllStuent = {
@@ -6,7 +5,6 @@ type EnrollmentAllStuent = {
     createAt : string;
     updatedAt : string;
     student : StudentType;
-    course : GetCourseType
     
 }
 

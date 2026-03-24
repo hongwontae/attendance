@@ -24,9 +24,9 @@ function StudentPage(){
         <>
             <div className="m-2 text-center">
                 <h1 className="text-3xl mb-4">Student LIST</h1>
-                <section className="flex flex-col text-[1.2rem]">
-                    {data?.map(({student, course})=>{
-                        return <div>{student.name} - {course.name}</div>
+                <section className="flex flex-col text-[1.2rem] gap-4">
+                    {data?.map(({student})=>{
+                        return <div className="border rounded">{student.name}</div>
                     })}
                 </section>
             </div>

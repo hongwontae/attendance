@@ -3,9 +3,9 @@ POST http://localhost:3000/enrollment/enroll/create
 Content-Type: application/json
 
 {
-    "studentId" : "10",
+    "studentId" : "2",
     "adminId" : "1",
-    "courseId" : "1"
+    "courseId" : "2"
 }
 
 ### Get ALL Stu
