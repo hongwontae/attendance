@@ -3,8 +3,8 @@ POST http://localhost:3000/course/save
 Content-Type: application/json
 
 {
-    "name" : "Java & Spring",
-    "description" : "Deep Thinking",
+    "name" : "Excercise & Soccer",
+    "description" : "Strict Strategy",
     "startDate" : "2026-02-01",
     "endDate" : "2026-08-01"
 }

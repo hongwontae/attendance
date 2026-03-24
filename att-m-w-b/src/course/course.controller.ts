@@ -12,7 +12,7 @@ export class CourseController {
     @Post('save')
     @UsePipes(new ValidationPipe({whitelist : true, transform : true}))
     async createCourse(@Body() body : CreateCourseDto){
-        return await this.courseService.createCourse(body, 1);
+        return await this.courseService.createCourse(body, 2);
     }
 
     @Patch('update/:id')

@@ -3,8 +3,8 @@ Post http://localhost:3000/student/save
 Content-Type: application/json
 
 {
-    "adminId" : "1",
-    "name" : "Modiric",
+    "adminId" : "2",
+    "name" : "Sedric",
     "age" : "17",
     "phone" : "010-2222-2222",
     "pPhone" : "010-3333-3333",

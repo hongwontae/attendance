@@ -3,9 +3,9 @@ Post http://localhost:3000/attendance/create
 Content-Type: application/json
 
 {
-    "date" : "2026-03-20",
-    "status" : "absent",
-    "enrollmentId" : "8"
+    "date" : "2026-03-22",
+    "status" : "present",
+    "enrollmentId" : "9"
 }
 
 ### ll
