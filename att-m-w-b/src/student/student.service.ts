@@ -86,6 +86,32 @@ export class StudentService {
     return await this.studentRepo.remove(oneStudent);
   }
 
+  async findStudentAndCourse(){
+    const stuAndCou =  await this.studentRepo.find({
+      relations : ['enrollments', 'enrollments.course']
+    })
+
+    const refineStuAndCou = stuAndCou.map(({id, name, age, email, memo, phone, pPhone, enrollments})=>{
+        return {
+          id,
+          name,
+          age,
+          email,
+          memo,
+          phone,
+          pPhone,
+          courses : enrollments.map(({course})=>{
+            return {
+              id : course.id,
+              name : course.name,
+              description : course.description
+            }
+          })
+        }
+    })
+    return refineStuAndCou;
+  }
+
   
 
 }

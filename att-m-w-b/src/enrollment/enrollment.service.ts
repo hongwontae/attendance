@@ -28,7 +28,7 @@ export class EnrollmentService {
     return await this.enrollmentRepo
       .createQueryBuilder('enrollment')
       .leftJoinAndSelect('enrollment.student', 'student')
-
+      .leftJoinAndSelect('enrollment.course', 'course')
       .where('enrollment.adminId = :adminId', { adminId })
       .addOrderBy('enrollment.createdAt', 'ASC')
       .getMany();

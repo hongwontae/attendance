@@ -50,4 +50,9 @@ export class StudentController {
       return deleteOneStu;
   }
 
+  @Get('/student/course')
+  async getStudentCourse(){
+    return await this.studentService.findStudentAndCourse();
+  }
+
 }
