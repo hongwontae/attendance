@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { User } from "../types/login-page-types";
+import type { User } from "../types/auth-type/auth-type";
 
 interface AuthState {
     user : User | null;
