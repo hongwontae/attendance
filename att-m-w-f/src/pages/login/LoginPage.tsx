@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import type { LoginFormValue } from "../../types/login-page-types";
-import { loginApi } from "../../api/auth-api";
+import type { LoginFormValue } from "../../types/auth-type/auth-type";
+import { loginApi } from "../../api/auth/auth-api";
 import { useAuthStore } from "../../store/auth-store";
 import { useNavigate } from "react-router";
 

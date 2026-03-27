@@ -5,9 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TestPage from "./pages/test/TestPage";
 import AppInitComponent from "./components/utils/AppinitComponent";
 import ProtectRouter from "./components/utils/ProtectRouter";
-import CoursePage from "./pages/course/CoursePage";
-import CourseDetail from "./components/course-components/CourseDetail";
-import CourseStudentAttendance from "./components/course-components/CourseStudentAttendance";
 import StudentPage from "./pages/student/StudentPage";
 
 function App() {
@@ -33,30 +30,8 @@ function App() {
             <StudentPage></StudentPage>
           </ProtectRouter>
         },
-        {
-          path: "/course",
-          element: (
-            <ProtectRouter>
-              <CoursePage></CoursePage>
-            </ProtectRouter>
-          ),
-        },
-        {
-          path : '/courses/:courseId',
-          element : (
-            <ProtectRouter>
-              <CourseDetail></CourseDetail>
-            </ProtectRouter>
-          )
-        },
-        {
-          path : '/course/:courseId/student/:studentId',
-          element : (
-            <ProtectRouter>
-              <CourseStudentAttendance></CourseStudentAttendance>
-            </ProtectRouter>
-          )
-        }
+
+
       ],
     },
   ]);

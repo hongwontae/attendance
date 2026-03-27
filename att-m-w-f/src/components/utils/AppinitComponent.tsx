@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../../store/auth-store";
 import { useEffect } from "react";
-import { reloadApi } from "../../api/reload-api"; 
+import { reloadApi } from "../../api/auth/reload-api"; 
 
 function AppInitComponent(){
 

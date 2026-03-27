@@ -1,4 +1,4 @@
-import type { StudentType } from "../types/student-type/student-type";
+import type { StudentType } from "../../types/student-type/student-type";
 
 export type StudentAndCourseType = StudentType & {
     courses : {id : number, name : string, description : string}[]

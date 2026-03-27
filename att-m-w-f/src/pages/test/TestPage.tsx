@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {motion} from 'framer-motion';
-import { getStudentAndCourse } from "../../api/get-student-course.api";
+import { getStudentAndCourse } from "../../api/student/get-student-course.api";
 
 function TestPage() {
   const [openId, setOpenId] = useState<number | null>(null);

@@ -9,3 +9,13 @@ export type StudentType = {
     createdAt : string;
     updatedAt : string;
 }
+
+export type SummaryStudentType = {
+    id : number;
+    name : string;
+    age : number;
+    email : string;
+    memo : string;
+    phone : string;
+    pPhone : string;
+}

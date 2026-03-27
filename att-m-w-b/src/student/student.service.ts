@@ -86,6 +86,9 @@ export class StudentService {
     return await this.studentRepo.remove(oneStudent);
   }
 
+
+
+
   async findStudentAndCourse(){
     const stuAndCou =  await this.studentRepo.find({
       relations : ['enrollments', 'enrollments.course']

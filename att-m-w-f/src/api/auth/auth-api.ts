@@ -1,4 +1,4 @@
-import type { LoginFormValue } from "../types/login-page-types"; 
+import type { LoginFormValue } from "../..//types/auth-type/auth-type"; 
 
 export const loginApi = async (data : LoginFormValue)=>{
     
