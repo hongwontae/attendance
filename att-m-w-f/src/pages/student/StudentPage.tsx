@@ -23,8 +23,8 @@ function StudentPage(){
     return(
         <>
             <div className="m-2 text-center">
-                <h1 className="text-3xl mb-4">Student LIST</h1>
-                <section className="flex flex-col text-[1.2rem] gap-4">
+                <h1 className="text-3xl mb-4 font-pretendard font-semibold">Student LIST</h1>
+                <section className="flex flex-col gap-4 font-pretendard font-normal">
                     {data?.map(({name})=>{
                         return <div className="border rounded">{name}</div>
                     })}
