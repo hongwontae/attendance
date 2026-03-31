@@ -1,7 +1,7 @@
 import type { SummaryStudentType } from "../../types/student-type/student-type";
 import type { SummaryCourseType } from "../../types/course-type/course-type";
 
-type CombinedType = SummaryStudentType & {
+export type CombinedType = SummaryStudentType & {
     courses : SummaryCourseType[]
 }
 

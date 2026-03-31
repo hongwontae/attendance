@@ -87,8 +87,6 @@ export class StudentService {
   }
 
 
-
-
   async findStudentAndCourse(){
     const stuAndCou =  await this.studentRepo.find({
       relations : ['enrollments', 'enrollments.course']
