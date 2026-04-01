@@ -22,13 +22,12 @@ function StudentPage(){
         return null;
     }
 
-    console.log(data)
 
 
     return(
         <>
-            <div className="m-2 text-center">
-                <h1 className="text-3xl mb-4 font-pretendard font-semibold">Student LIST</h1>
+            <div className="p-5 text-center">
+                <h1 className="text-3xl mb-10 font-pretendard font-semibold">Student LIST</h1>
                 <StudentInfo stuInfo={data}></StudentInfo>
             </div>
         </>
