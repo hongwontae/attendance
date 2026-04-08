@@ -7,12 +7,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student-dto';
 import { StudentService } from './student.service';
 import { UpdateStudentDto } from './dto/update-student-dto';
+import { GetStudentDto } from './dto/get-student-dto';
 
 @Controller('student')
 export class StudentController {
@@ -51,8 +53,8 @@ export class StudentController {
   }
 
   @Get('/student/course')
-  async getStudentCourse(){
-    return await this.studentService.findStudentAndCourse();
+  async getStudentCourse(@Query() query : GetStudentDto){
+    return await this.studentService.findStudentAndCourse(query);
   }
 
 }

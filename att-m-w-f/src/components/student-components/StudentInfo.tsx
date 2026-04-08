@@ -2,9 +2,10 @@ import { useState } from "react";
 import type { CombinedType } from "../../api/student/get-student-api";
 import StudentDetailModal from "./StudentDetailModal";
 import { AnimatePresence } from "framer-motion";
+import type { PaginatedResponse } from "../../types/util-type/page-type";
 
 type props = {
-  stuInfo: CombinedType[];
+  stuInfo : PaginatedResponse<CombinedType>;
 };
 
 function StudentInfo({ stuInfo }: props) {
@@ -18,8 +19,8 @@ function StudentInfo({ stuInfo }: props) {
 
   return (
     <>
-      <section className="grid grid-cols-3 gap-4 font-pretendard font-normal  justify-items-center">
-        {stuInfo.map((ele, idx, arr) => {
+      <section className="grid grid-cols-2 gap-7 font-pretendard font-normal  justify-items-center">
+        {stuInfo.data.map((ele) => {
           return (
             <div
               className="border rounded-2xl p-2 w-full"

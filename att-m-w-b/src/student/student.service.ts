@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateStudentDto } from './dto/create-student-dto';
 import { UpdateStudentDto } from './dto/update-student-dto';
 import { AdminService } from 'src/admin/admin.service';
+import { GetStudentDto } from './dto/get-student-dto';
 
 @Injectable()
 export class StudentService {
@@ -87,12 +88,21 @@ export class StudentService {
   }
 
 
-  async findStudentAndCourse(){
-    const stuAndCou =  await this.studentRepo.find({
+  async findStudentAndCourse(query : GetStudentDto){
+
+    const {limit, page} = query;
+
+    const [data, total] =  await this.studentRepo.findAndCount({
+      skip : (page-1) * limit,
+      take : limit,
+      order : {
+        id : 'ASC'
+      },
       relations : ['enrollments', 'enrollments.course']
     })
 
-    const refineStuAndCou = stuAndCou.map(({id, name, age, email, memo, phone, pPhone, enrollments})=>{
+    
+    const refineStuAndCou = data.map(({id, name, age, email, memo, phone, pPhone, enrollments})=>{
         return {
           id,
           name,
@@ -101,7 +111,7 @@ export class StudentService {
           memo,
           phone,
           pPhone,
-          courses : enrollments.map(({course})=>{
+          courses : (enrollments ?? []).map(({course})=>{
             return {
               id : course.id,
               name : course.name,
@@ -110,7 +120,9 @@ export class StudentService {
           })
         }
     })
-    return refineStuAndCou;
+    return {
+      data : refineStuAndCou, total, page, lastPage : Math.ceil(total/limit)
+    };
   }
 
   

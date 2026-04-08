@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import type { CombinedType } from "../../api/student/get-student-api";
+import { useEscClose } from "../../custom-hooks/useEscClose";
 
 type Props = {
   closeModal: () => void;
@@ -7,6 +8,9 @@ type Props = {
 };
 
 function StudentDetailModal({ closeModal, stuInfo }: Props) {
+
+  useEscClose(closeModal, stuInfo);
+
   return (
     <>
       <motion.div
