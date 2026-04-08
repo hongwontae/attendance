@@ -4,12 +4,12 @@ Content-Type: application/json
 
 {
     "adminId" : "1",
-    "name" : "k30",
+    "name" : "k31",
     "age" : "17",
     "phone" : "010-2222-2222",
     "pPhone" : "010-3333-3333",
     "email" : "dnjsxoghd@naver.com",
-    "memo" : "Hello-World"
+    "memo" : "Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World "
 }
 
 ### Update Student

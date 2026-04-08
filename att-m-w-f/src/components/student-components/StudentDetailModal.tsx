@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import type { CombinedType } from "../../api/student/get-student-api";
 import { useEscClose } from "../../custom-hooks/useEscClose";
+import StudentDetailInfo from "./StudentDetailInfo";
 
 type Props = {
   closeModal: () => void;
@@ -10,6 +11,8 @@ type Props = {
 function StudentDetailModal({ closeModal, stuInfo }: Props) {
 
   useEscClose(closeModal, stuInfo);
+
+  console.log(stuInfo);
 
   return (
     <>
@@ -28,9 +31,9 @@ function StudentDetailModal({ closeModal, stuInfo }: Props) {
           transition={{ duration: 0.25 }}
           onClick={(e) => e.stopPropagation()}
         >
-          <h1>Hello</h1>
+          <StudentDetailInfo stuInfo={stuInfo}></StudentDetailInfo>
           <button
-            className="mt-4 px-4 py-2 bg-gray-200 rounded-lg"
+            className="mt-4 px-4 py-2 bg-gray-200 rounded-lg font-pretendard font-light"
             onClick={closeModal}
           >
             Close

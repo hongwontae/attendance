@@ -1,29 +1,50 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useForm, Controller } from "react-hook-form";
+
+const subjects = ["국어", "수학", "영어", "과학"];
 
 function Test2Page() {
-  const [open, setOpen] = useState(false);
+  const { control, handleSubmit } = useForm();
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
 
   return (
-    <>
-      <div>
-        <button onClick={() => setOpen(!open)}>toggle</button>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Controller
+        name="subjects"
+        control={control}
+        defaultValue={[]}
+        render={({ field }) => (
+          <div className="flex gap-3">
+            {subjects.map((sub) => {
+              const isSelected = field.value.includes(sub);
 
-        <motion.div layout='position' style={{ background: "lightblue", padding: 10 }}>
-          위 박스
-        </motion.div>
-
-        {open && (
-          <motion.div layout='position' style={{ background: "pink", padding: 10 }}>
-            가운데 박스
-          </motion.div>
+              return (
+                <button
+                  type="button"
+                  key={sub}
+                  onClick={() => {
+                    if (isSelected) {
+                      field.onChange(field.value.filter((v) => v !== sub));
+                    } else {
+                      field.onChange([...field.value, sub]);
+                    }
+                  }}
+                  className={`px-4 py-2 border rounded
+              ${isSelected ? "bg-blue-500 text-white" : ""}
+            `}
+                >
+                  {sub}
+                </button>
+              );
+            })}
+          </div>
         )}
+      />
 
-        <motion.div layout='position' style={{ background: "lightgreen", padding: 10 }}>
-          아래 박스
-        </motion.div>
-      </div>
-    </>
+      <button type="submit">제출</button>
+    </form>
   );
 }
 

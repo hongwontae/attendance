@@ -1,0 +1,1 @@
+export const coursesData = ['JavaScript & React', 'Java & Spring', 'Excercise & Soccer'];
