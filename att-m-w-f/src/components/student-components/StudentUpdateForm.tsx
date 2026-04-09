@@ -12,7 +12,7 @@ function StudentUpdateForm({stuInfo} : Props) {
   useEffect(()=>{
     if(stuInfo){
         reset(stuInfo)
-    }
+    }2
   }, [reset, stuInfo])
 
   return (
