@@ -8,7 +8,7 @@ function StudentDetailInfo({ stuInfo }: Props) {
   return (
     <>
       <div className="font-pretendard font-medium">
-        <div className="mb-2 font-semibold">상세 정보</div>
+        <div className="mb-2 font-bold">상세 정보</div>
         <article className="flex flex-col gap-2 ">
           <div>이름 : {stuInfo.name}</div>
           <div>나이 : {stuInfo.age}</div>

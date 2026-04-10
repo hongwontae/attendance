@@ -5,7 +5,7 @@ Content-Type: application/json
 {
     "studentId" : "2",
     "adminId" : "1",
-    "courseId" : "2"
+    "courseId" : "3"
 }
 
 ### Get ALL Stu

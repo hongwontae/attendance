@@ -1,11 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
-import { getStudentAPi } from "../../api/student/get-student-api";
+import {
+  getStudentAPi,
+  type CombinedType,
+} from "../../api/student/get-student-api";
 import StudentInfo from "../../components/student-components/StudentInfo";
 import { useState } from "react";
 import StudentPageButton from "../../components/student-components/StudentPageButton";
+import { AnimatePresence } from "framer-motion";
+import StudentDetailModal from "../../components/student-components/StudentDetailModal";
+import StudentUpdateFormModal from "../../components/student-components/StudentUpdateFormModal";
 
 function StudentPage() {
   const [page, setPage] = useState<number>(1);
+  const [selectedStudent, setSelectedStudent] = useState<CombinedType | null>(
+    null,
+  );
+  const [mode, setMode] = useState<"detail" | "update" | null>(null);
+
+  function openDetail(student: CombinedType) {
+    setSelectedStudent(student);
+    setMode("detail");
+  }
+
+  function openUpdate() {
+    setMode("update");
+  }
+
+  function closeModal() {
+    setSelectedStudent(null);
+    setMode(null);
+  }
 
   function changePageHandler(page: number) {
     setPage(page);
@@ -36,9 +60,8 @@ function StudentPage() {
           학생 목록
         </h1>
 
-        {/* 핵심 */}
         <div className="grow">
-          <StudentInfo stuInfo={data} />
+          <StudentInfo stuInfo={data} onSelect={openDetail} />
         </div>
 
         <section className="flex justify-center items-center font-bold">
@@ -48,6 +71,22 @@ function StudentPage() {
             lastPage={data.lastPage}
           />
         </section>
+
+        <AnimatePresence>
+          {mode === "detail" && selectedStudent && (
+            <StudentDetailModal
+              stuInfo={selectedStudent}
+              closeModal={closeModal}
+              updateModal={openUpdate}
+            ></StudentDetailModal>
+          )}
+          {mode === "update" && selectedStudent && (
+            <StudentUpdateFormModal
+              stuInfo={selectedStudent}
+              closeModal={closeModal}
+            ></StudentUpdateFormModal>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
