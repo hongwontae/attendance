@@ -8,7 +8,7 @@ function CustomButton({ buttonName, className, onClick }: Props) {
   return (
     <>
       <button
-        className={`className="mt-4 px-4 py-2 bg-gray-200 rounded-lg font-pretendard font-light ${className}`}
+        className={`className="mt-4 px-4 py-2 bg-gray-200 rounded-lg font-pretendard font-medium ${className}`}
         onClick={onClick}
       >
         {buttonName}
