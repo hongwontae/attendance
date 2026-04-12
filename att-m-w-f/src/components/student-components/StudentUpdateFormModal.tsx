@@ -6,13 +6,15 @@ import CustomButton from "../custom/CustomButton";
 import CustomInput from "../custom/CustomInput";
 import CustomTextarea from "../custom/CustomTextarea";
 import CustomCheckbox from "../custom/CustomCheckbox";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateStudentApi, type CombinedOptionalUpdateStudentType, type OptionalUpdateStudentType } from "../../api/student/post-student-update-api";
 
 type Props = {
   stuInfo: CombinedType;
   closeModal: () => void;
 };
 
-type FormValues = {
+export type FormValues = {
   name: string;
   age: number;
   email: string;
@@ -22,8 +24,22 @@ type FormValues = {
   courses: string[];
 };
 
+
 function StudentUpdateFormModal({ stuInfo, closeModal }: Props) {
-  const { register, handleSubmit } = useForm<FormValues>({
+
+  const queryClient = useQueryClient();
+
+
+  const mutation = useMutation({
+    mutationFn : updateStudentApi,
+    onSuccess : ()=>{
+      queryClient.invalidateQueries({queryKey : ['students']});
+      closeModal();
+    }
+
+  })
+
+  const { register, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       name: stuInfo.name,
       age: stuInfo.age,
@@ -35,10 +51,12 @@ function StudentUpdateFormModal({ stuInfo, closeModal }: Props) {
     },
   });
 
-  function onSubmit(data: any) {
-    console.log("??");
-    console.log(data);
-  }
+  function onSubmit(data: FormValues) {
+  mutation.mutate({
+    ...data,
+    id: stuInfo.id,
+  });
+}
 
   useEscClose(closeModal, stuInfo);
 
@@ -46,6 +64,7 @@ function StudentUpdateFormModal({ stuInfo, closeModal }: Props) {
     <>
       <CustomModal>
         <form
+        id="student-form"
           className="font-pretendard font-medium"
           onSubmit={handleSubmit(onSubmit)}
         >
@@ -93,14 +112,15 @@ function StudentUpdateFormModal({ stuInfo, closeModal }: Props) {
               name="memo"
             ></CustomTextarea>
           </div>
-          <button type="submit">mmmm</button>
         </form>
 
         <div className="flex flex-row gap-4 mt-6 justify-center">
           <CustomButton
+            form='student-form'
             buttonName="Submit"
-            onClick={() => console.log("update success")}
+            type='submit'
           ></CustomButton>
+          <CustomButton buttonName="Reset" onClick={()=>reset()}></CustomButton>
           <CustomButton buttonName="Close" onClick={closeModal}></CustomButton>
         </div>
       </CustomModal>

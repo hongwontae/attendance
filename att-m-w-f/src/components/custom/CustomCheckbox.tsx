@@ -16,12 +16,12 @@ function CustomCheckbox<T extends FieldValues>({
 }: Props<T>) {
   return (
     <>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-6 justify-center">
         <p>{checkFieldName}</p>
         {existCourses.map((course) => (
-          <label key={course} className="flex items-center gap-1">
+          <label key={course} className="flex items-center gap-2">
             <input type="checkbox" value={course} {...register(name)} />
-            <span>{course}</span>
+            <span className="text-[0.8rem]">{course}</span>
           </label>
         ))}
       </div>

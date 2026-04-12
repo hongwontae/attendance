@@ -31,8 +31,9 @@ export class StudentController {
   @Patch('update/:id')
   @UsePipes(new ValidationPipe({whitelist : true, transform : true}))
   async updateStudent(@Param('id', ParseIntPipe) id : number, @Body() body : UpdateStudentDto){
-    const upStu = await this.studentService.updateStudent(body, id, 1);
-    return upStu
+    console.log('arrive')
+    // const upStu = await this.studentService.updateStudent(body, id, 1);
+    // return upStu
   }
 
   @Get('all')
