@@ -31,9 +31,10 @@ export class StudentController {
   @Patch('update/:id')
   @UsePipes(new ValidationPipe({whitelist : true, transform : true}))
   async updateStudent(@Param('id', ParseIntPipe) id : number, @Body() body : UpdateStudentDto){
-    console.log('arrive')
-    // const upStu = await this.studentService.updateStudent(body, id, 1);
-    // return upStu
+    console.log(body)
+    console.log(id)
+    const upStu = await this.studentService.updateStudentAndCourse(id, 1, body);
+    return upStu
   }
 
   @Get('all')
@@ -49,13 +50,13 @@ export class StudentController {
 
   @Delete('remove/:id')
   async deleteOneStudent(@Param('id', ParseIntPipe) id : number){
-      const deleteOneStu = await this.studentService.deleteOneStudnet(id, 1);
+      const deleteOneStu = await this.studentService.deleteOneStudent(id, 1);
       return deleteOneStu;
   }
 
   @Get('/student/course')
   async getStudentCourse(@Query() query : GetStudentDto){
-    return await this.studentService.findStudentAndCourse(query);
+    return await this.studentService.findStudentAndCourse(query, 1);
   }
 
 }

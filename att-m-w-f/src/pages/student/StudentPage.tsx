@@ -9,13 +9,14 @@ import StudentPageButton from "../../components/student-components/StudentPageBu
 import { AnimatePresence } from "framer-motion";
 import StudentDetailModal from "../../components/student-components/StudentDetailModal";
 import StudentUpdateFormModal from "../../components/student-components/StudentUpdateFormModal";
+import StudentDeleteModal from "../../components/student-components/StudentDeleteModal";
 
 function StudentPage() {
   const [page, setPage] = useState<number>(1);
   const [selectedStudent, setSelectedStudent] = useState<CombinedType | null>(
     null,
   );
-  const [mode, setMode] = useState<"detail" | "update" | null>(null);
+  const [mode, setMode] = useState<"detail" | "update" | "delete" | null>(null);
 
   function openDetail(student: CombinedType) {
     setSelectedStudent(student);
@@ -24,6 +25,10 @@ function StudentPage() {
 
   function openUpdate() {
     setMode("update");
+  }
+
+  function openDelete() {
+    setMode("delete");
   }
 
   function closeModal() {
@@ -84,7 +89,14 @@ function StudentPage() {
             <StudentUpdateFormModal
               stuInfo={selectedStudent}
               closeModal={closeModal}
+              deleteModal={openDelete}
             ></StudentUpdateFormModal>
+          )}
+          {mode === "delete" && selectedStudent &&  (
+            <StudentDeleteModal
+              closeModal={closeModal}
+              stuInfo={selectedStudent!}
+            ></StudentDeleteModal>
           )}
         </AnimatePresence>
       </div>

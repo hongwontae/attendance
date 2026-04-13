@@ -3,10 +3,20 @@ import type { FormValues } from "../../components/student-components/StudentUpda
 
 export type OptionalUpdateStudentType = Partial<FormValues>
 
-export type CombinedOptionalUpdateStudentType = OptionalUpdateStudentType & {id : number}
+export type CombinedOptionalUpdateStudentType = {
+      name: string;
+  age: number;
+  email: string;
+  phone: string;
+  pPhone: string;
+  memo: string;
+    courseIds : number[]
+} & {id : number}
 
 
 export const updateStudentApi = async (updateInfo : CombinedOptionalUpdateStudentType)=>{
+
+    console.log(updateInfo);
 
     const response = await fetch(`http://localhost:3000/student/update/${updateInfo.id}`, {
         credentials : 'include',

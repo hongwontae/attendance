@@ -6,12 +6,13 @@ import CustomButton from "../custom/CustomButton";
 import CustomInput from "../custom/CustomInput";
 import CustomTextarea from "../custom/CustomTextarea";
 import CustomCheckbox from "../custom/CustomCheckbox";
-import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateStudentApi, type CombinedOptionalUpdateStudentType, type OptionalUpdateStudentType } from "../../api/student/post-student-update-api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateStudentApi } from "../../api/student/post-student-update-api";
 
 type Props = {
   stuInfo: CombinedType;
   closeModal: () => void;
+  deleteModal : ()=>void;
 };
 
 export type FormValues = {
@@ -25,7 +26,7 @@ export type FormValues = {
 };
 
 
-function StudentUpdateFormModal({ stuInfo, closeModal }: Props) {
+function StudentUpdateFormModal({ stuInfo, closeModal, deleteModal }: Props) {
 
   const queryClient = useQueryClient();
 
@@ -47,13 +48,15 @@ function StudentUpdateFormModal({ stuInfo, closeModal }: Props) {
       phone: stuInfo.phone,
       pPhone: stuInfo.pPhone,
       memo: stuInfo.memo,
-      courses: stuInfo.courses.map((c) => c.name),
+      courses: stuInfo.courses.map((c) => String(c.id)),
     },
   });
 
   function onSubmit(data: FormValues) {
+    const courseIds = data.courses.map(id => Number(id))
   mutation.mutate({
     ...data,
+    courseIds : courseIds,
     id: stuInfo.id,
   });
 }
@@ -104,7 +107,6 @@ function StudentUpdateFormModal({ stuInfo, closeModal }: Props) {
               register={register}
               checkFieldName="과목"
               name="courses"
-              courses={stuInfo.courses.map((c) => c.name)}
             ></CustomCheckbox>
             <CustomTextarea
               register={register}
@@ -121,6 +123,7 @@ function StudentUpdateFormModal({ stuInfo, closeModal }: Props) {
             type='submit'
           ></CustomButton>
           <CustomButton buttonName="Reset" onClick={()=>reset()}></CustomButton>
+          <CustomButton buttonName="Delete" onClick={deleteModal}></CustomButton>
           <CustomButton buttonName="Close" onClick={closeModal}></CustomButton>
         </div>
       </CustomModal>

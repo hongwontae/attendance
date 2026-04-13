@@ -1,18 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from './student.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateStudentDto } from './dto/create-student-dto';
 import { UpdateStudentDto } from './dto/update-student-dto';
 import { AdminService } from 'src/admin/admin.service';
 import { GetStudentDto } from './dto/get-student-dto';
+import { CourseEntity } from 'src/course/course.entity';
+import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
 
 @Injectable()
 export class StudentService {
   constructor(
     @InjectRepository(StudentEntity)
-    private studentRepo: Repository<StudentEntity>,
+    private readonly studentRepo: Repository<StudentEntity>,
     private readonly adminService: AdminService,
+    @InjectRepository(EnrollmentEntity)
+    private readonly enrollRepo : Repository<EnrollmentEntity>,
+    @InjectRepository(CourseEntity)
+    private readonly courseRepo : Repository<CourseEntity>
   ) {}
 
   async createStudent(studentInfo: CreateStudentDto) {
@@ -37,7 +43,6 @@ export class StudentService {
     id: number,
     adminId: number,
   ) {
-
     const whereCondition = {
       id,
       admin: { id: adminId },
@@ -55,9 +60,9 @@ export class StudentService {
     return this.studentRepo.findOne({ where: whereCondition });
   }
 
-  async findAllStudent(adminId : number) {
+  async findAllStudent(adminId: number) {
     const allStudent = await this.studentRepo.find({
-        where : {admin : {id : adminId}}
+      where: { admin: { id: adminId } },
     });
 
     if (!allStudent) {
@@ -67,8 +72,11 @@ export class StudentService {
     return allStudent;
   }
 
-  async findOneStudent(id: number, adminId : number) {
-    const oneStudent = await this.studentRepo.findOneBy({ id, admin : {id : adminId} });
+  async findOneStudent(id: number, adminId: number) {
+    const oneStudent = await this.studentRepo.findOneBy({
+      id,
+      admin: { id: adminId },
+    });
 
     if (!oneStudent) {
       throw new NotFoundException('찾고자 하는 학생이 없습니다.');
@@ -77,8 +85,11 @@ export class StudentService {
     return oneStudent;
   }
 
-  async deleteOneStudnet(id: number, adminId : number) {
-    const oneStudent = await this.studentRepo.findOneBy({ id, admin : {id : adminId}});
+  async deleteOneStudent(id: number, adminId: number) {
+    const oneStudent = await this.studentRepo.findOneBy({
+      id,
+      admin: { id: adminId },
+    });
 
     if (!oneStudent) {
       throw new NotFoundException('삭제하고자 하는 학생이 없습니다.');
@@ -87,22 +98,22 @@ export class StudentService {
     return await this.studentRepo.remove(oneStudent);
   }
 
+  // 브라우저에서 기능하는 Service
+  async findStudentAndCourse(query: GetStudentDto, adminId : number) {
+    const { limit, page } = query;
 
-  async findStudentAndCourse(query : GetStudentDto){
-
-    const {limit, page} = query;
-
-    const [data, total] =  await this.studentRepo.findAndCount({
-      skip : (page-1) * limit,
-      take : limit,
-      order : {
-        id : 'ASC'
+    const [data, total] = await this.studentRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+      order: {
+        id: 'ASC',
       },
-      relations : ['enrollments', 'enrollments.course']
-    })
+      relations: ['enrollments', 'enrollments.course'],
+      where : {admin : {id : adminId}}
+    });
 
-    
-    const refineStuAndCou = data.map(({id, name, age, email, memo, phone, pPhone, enrollments})=>{
+    const refineStuAndCou = data.map(
+      ({ id, name, age, email, memo, phone, pPhone, enrollments }) => {
         return {
           id,
           name,
@@ -111,20 +122,70 @@ export class StudentService {
           memo,
           phone,
           pPhone,
-          courses : (enrollments ?? []).map(({course})=>{
+          courses: (enrollments ?? []).map(({ course }) => {
             return {
-              id : course.id,
-              name : course.name,
-              description : course.description
-            }
-          })
-        }
-    })
+              id: course.id,
+              name: course.name,
+              description: course.description,
+            };
+          }),
+        };
+      },
+    );
     return {
-      data : refineStuAndCou, total, page, lastPage : Math.ceil(total/limit)
+      data: refineStuAndCou,
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
     };
   }
 
-  
+  async updateStudentAndCourse(
+    stuId: number,
+    adminId: number,
+    stuInfo: UpdateStudentDto,
+  ) {
 
+
+
+    const student = await this.studentRepo.findOne({
+      where: { id: stuId, admin: { id: adminId } },
+      relations: ['enrollments', 'enrollments.course'],
+    });
+
+
+
+      if (!student) {
+        
+    throw new NotFoundException();
+  }
+
+    Object.assign(student, stuInfo);
+
+    await this.studentRepo.save(student);
+
+    if(stuInfo.courseIds){
+      await this.enrollRepo.delete({student : {id : student.id}})
+
+      
+
+      const enrollments = stuInfo.courseIds.map((id)=>{
+        return this.enrollRepo.create({
+          student,
+          course : {id},
+          admin : {id : adminId}
+        })
+      })
+
+      await this.enrollRepo.save(enrollments)
+    }
+
+    return this.studentRepo.findOne({
+      where : {id : stuId},
+      relations : ['enrollments', 'enrollments.course']
+    })
+
+
+
+  }
 }

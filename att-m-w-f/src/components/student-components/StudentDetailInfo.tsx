@@ -13,9 +13,9 @@ function StudentDetailInfo({ stuInfo }: Props) {
           <div>이름 : {stuInfo.name}</div>
           <div>나이 : {stuInfo.age}</div>
           <div className="flex flex-col gap-2 justify-center">
-            {stuInfo.courses.map((ele)=>{
+            {stuInfo.courses.map((ele, idx)=>{
               return <div key={ele.id}>
-                <div>과목-{ele.id} : {ele.name}</div>
+                <div>과목-{idx+1} : {ele.name}</div>
               </div>
             })}
           </div>
