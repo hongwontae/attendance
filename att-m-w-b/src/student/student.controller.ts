@@ -59,4 +59,9 @@ export class StudentController {
     return await this.studentService.findStudentAndCourse(query, 1);
   }
 
+  @Get('/search')
+  async searchStudents(@Query('keword') keword : string){
+    return await this.studentService.searchStudentsService(keword)
+  }
+
 }

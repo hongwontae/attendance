@@ -22,17 +22,7 @@ Content-Type: application/json
     "pPhone" : "010-3333-3241"
 }
 
-### Find all Student
-GET http://localhost:3000/student/all
-
-### Find one Student
-Get http://localhost:3000/student/one/1
-
-### Delete One Student
-DELETE http://localhost:3000/student/remove/1
-
-
-### student and course
-GET http://localhost:3000/student/student/course
+### Search Test
+Get http://localhost:3000/student/search?keword=홍
 
 

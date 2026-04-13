@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from './student.entity';
-import { In, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { CreateStudentDto } from './dto/create-student-dto';
 import { UpdateStudentDto } from './dto/update-student-dto';
 import { AdminService } from 'src/admin/admin.service';
@@ -85,18 +85,7 @@ export class StudentService {
     return oneStudent;
   }
 
-  async deleteOneStudent(id: number, adminId: number) {
-    const oneStudent = await this.studentRepo.findOneBy({
-      id,
-      admin: { id: adminId },
-    });
 
-    if (!oneStudent) {
-      throw new NotFoundException('삭제하고자 하는 학생이 없습니다.');
-    }
-
-    return await this.studentRepo.remove(oneStudent);
-  }
 
   // 브라우저에서 기능하는 Service
   async findStudentAndCourse(query: GetStudentDto, adminId : number) {
@@ -187,5 +176,30 @@ export class StudentService {
 
 
 
+  }
+
+    async deleteOneStudent(id: number, adminId: number) {
+    const oneStudent = await this.studentRepo.findOneBy({
+      id,
+      admin: { id: adminId },
+    });
+
+    if (!oneStudent) {
+      throw new NotFoundException('삭제하고자 하는 학생이 없습니다.');
+    }
+
+    return await this.studentRepo.remove(oneStudent);
+  }
+
+  async searchStudentsService(keyword : string){
+    if(!keyword){
+      return [];
+    }
+
+    return this.studentRepo.find({
+      where : {
+        name : ILike(`%${keyword}%`)
+      }
+    })
   }
 }
