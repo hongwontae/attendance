@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getStudentAPi } from "../../api/student/get-student-api";
 import StudentInfo from "../../components/student-components/StudentInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StudentPageButton from "../../components/student-components/StudentPageButton";
 import { AnimatePresence } from "framer-motion";
 import StudentDetailModal from "../../components/student-components/StudentDetailModal";
@@ -10,25 +10,55 @@ import StudentDeleteModal from "../../components/student-components/StudentDelet
 import { studentStore } from "../../store/stu-store";
 import StudentSearch from "../../components/student-components/StudentSearch";
 import { useDebounce } from "../../custom-hooks/useDebounce";
+import {useSearchParams} from 'react-router';
 
 function StudentPage() {
   // 3개의 상태
-  const [page, setPage] = useState<number>(1);
-  const [inputValue, setInputValue] = useState<string>("");
-  const keyword = useDebounce(inputValue, 500);
 
+ 
   const selectedStudent = studentStore((stu) => stu.selectedStudent);
   const mode = studentStore((stu) => stu.mode);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = Number(searchParams.get("page")) || 1;
+  const urlKeyword = searchParams.get("keyword") || "";
+  
+  const [inputValue, setInputValue] = useState(urlKeyword);
+  const keyword = useDebounce(inputValue, 500);
+
+  // ✅ URL → input 동기화 (뒤로가기 대응)
+  useEffect(() => {
+    setInputValue(urlKeyword);
+  }, [urlKeyword]);
+
+  // ✅ input → URL 동기화
+  useEffect(() => {
+    const currentKeyword = searchParams.get("keyword") || "";
+
+    if (currentKeyword !== keyword) {
+      setSearchParams({
+        page: "1",
+        keyword,
+      });
+    }
+  }, [keyword]);
+
+
+
   // chnage Handler
   function changePageHandler(page: number) {
-    setPage(page);
+    setSearchParams({
+    page: String(page),
+    keyword,
+  });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   const { data, isError, isLoading, isFetching } = useQuery({
     queryKey: ["students", page, keyword],
-    queryFn: () => getStudentAPi(page, keyword),
+    queryFn: ({signal}) => getStudentAPi(page, keyword, signal),
+    placeholderData : (prev)=>prev
   });
 
   if (isError) {
@@ -54,7 +84,6 @@ function StudentPage() {
           <StudentSearch
             value={inputValue}
             onChange={(v) => {
-              setPage(1);
               setInputValue(v);
             }}
           ></StudentSearch>

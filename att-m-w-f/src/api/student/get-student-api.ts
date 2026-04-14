@@ -9,12 +9,14 @@ export type CombinedType = SummaryStudentType & {
 export const getStudentAPi = async (
   page: number,
   keyword: string,
+  signal : AbortSignal
 ): Promise<PaginatedResponse<CombinedType>> => {
   const response = await fetch(
     `http://localhost:3000/student/student/course/?page=${page}&limit=10&keyword=${keyword}`,
     {
       method: "GET",
       credentials: "include",
+      signal
     },
   );
 
