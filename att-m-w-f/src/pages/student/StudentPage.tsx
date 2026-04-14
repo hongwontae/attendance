@@ -9,11 +9,14 @@ import StudentUpdateFormModal from "../../components/student-components/StudentU
 import StudentDeleteModal from "../../components/student-components/StudentDeleteModal";
 import { studentStore } from "../../store/stu-store";
 import StudentSearch from "../../components/student-components/StudentSearch";
+import { useDebounce } from "../../custom-hooks/useDebounce";
 
 function StudentPage() {
   // 3개의 상태
   const [page, setPage] = useState<number>(1);
-  const [keyword, setKeyword] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>("");
+  const keyword = useDebounce(inputValue, 500);
+
   const selectedStudent = studentStore((stu) => stu.selectedStudent);
   const mode = studentStore((stu) => stu.mode);
 
@@ -23,9 +26,9 @@ function StudentPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const { data, isError, isLoading } = useQuery({
+  const { data, isError, isLoading, isFetching } = useQuery({
     queryKey: ["students", page, keyword],
-    queryFn: () => getStudentAPi(page, keyword)
+    queryFn: () => getStudentAPi(page, keyword),
   });
 
   if (isError) {
@@ -48,13 +51,21 @@ function StudentPage() {
         </h1>
 
         <div>
-          <StudentSearch onSearch={(kw)=>{
-            setPage(1);
-            setKeyword(kw);
-          }}></StudentSearch>
+          <StudentSearch
+            value={inputValue}
+            onChange={(v) => {
+              setPage(1);
+              setInputValue(v);
+            }}
+          ></StudentSearch>
         </div>
 
         <div className="grow">
+          {isFetching && (
+            <div className="absolute top-0 right-0 text-xs text-gray-400">
+              업데이트 중...
+            </div>
+          )}
           <StudentInfo stuInfo={data} />
         </div>
 
