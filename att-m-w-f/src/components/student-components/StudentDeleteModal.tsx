@@ -4,13 +4,16 @@ import { useEscClose } from "../../custom-hooks/useEscClose";
 import CustomButton from "../custom/CustomButton";
 import CustomModal from "../custom/CustomModal";
 import { deleteStudentApi } from "../../api/student/delete-student-api";
+import { studentStore } from "../../store/stu-store";
 
 type Props = {
-  closeModal: () => void;
   stuInfo: CombinedType;
 };
 
-function StudentDeleteModal({ closeModal, stuInfo }: Props) {
+function StudentDeleteModal({ stuInfo }: Props) {
+
+  const closeModal = studentStore(stu => stu.closeModel);
+
   useEscClose(closeModal, stuInfo);
   const queryClient = useQueryClient();
 

@@ -1,12 +1,14 @@
 import type { CombinedType } from "../../api/student/get-student-api";
+import { studentStore } from "../../store/stu-store";
 import type { PaginatedResponse } from "../../types/util-type/page-type";
 
 type props = {
   stuInfo: PaginatedResponse<CombinedType>;
-  onSelect : (student : CombinedType)=>void
 };
 
-function StudentInfo({ stuInfo, onSelect }: props) {
+function StudentInfo({ stuInfo }: props) {
+
+  const openDetail = studentStore((stu)=>stu.openDetail)
 
 
   return (
@@ -17,13 +19,13 @@ function StudentInfo({ stuInfo, onSelect }: props) {
             <div
               className="border rounded-2xl p-2 w-full grid grid-cols-2 grid-rows-2 grid-flow-col"
               key={ele.id}
-              onClick={() => onSelect(ele)}
+              onClick={() => openDetail(ele)}
             >
-              <div>이름 {ele.name}</div>
+              <div>이름 : {ele.name}</div>
               <div>전화번호 : {ele.phone}</div>
               {ele.courses.map(({ name, id }, idx) => {
                 if(idx === 2){
-                    return
+                    return null
                 }
                 return (
                   <div key={id}>

@@ -1,8 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  getStudentAPi,
-  type CombinedType,
-} from "../../api/student/get-student-api";
+import { getStudentAPi } from "../../api/student/get-student-api";
 import StudentInfo from "../../components/student-components/StudentInfo";
 import { useState } from "react";
 import StudentPageButton from "../../components/student-components/StudentPageButton";
@@ -10,32 +7,16 @@ import { AnimatePresence } from "framer-motion";
 import StudentDetailModal from "../../components/student-components/StudentDetailModal";
 import StudentUpdateFormModal from "../../components/student-components/StudentUpdateFormModal";
 import StudentDeleteModal from "../../components/student-components/StudentDeleteModal";
+import { studentStore } from "../../store/stu-store";
 
 function StudentPage() {
+
+  // 3개의 상태
   const [page, setPage] = useState<number>(1);
-  const [selectedStudent, setSelectedStudent] = useState<CombinedType | null>(
-    null,
-  );
-  const [mode, setMode] = useState<"detail" | "update" | "delete" | null>(null);
+  const selectedStudent = studentStore((stu) => stu.selectedStudent);
+  const mode = studentStore((stu) => stu.mode);
 
-  function openDetail(student: CombinedType) {
-    setSelectedStudent(student);
-    setMode("detail");
-  }
-
-  function openUpdate() {
-    setMode("update");
-  }
-
-  function openDelete() {
-    setMode("delete");
-  }
-
-  function closeModal() {
-    setSelectedStudent(null);
-    setMode(null);
-  }
-
+  // chnage Handler
   function changePageHandler(page: number) {
     setPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -66,7 +47,7 @@ function StudentPage() {
         </h1>
 
         <div className="grow">
-          <StudentInfo stuInfo={data} onSelect={openDetail} />
+          <StudentInfo stuInfo={data} />
         </div>
 
         <section className="flex justify-center items-center font-bold">
@@ -79,24 +60,15 @@ function StudentPage() {
 
         <AnimatePresence>
           {mode === "detail" && selectedStudent && (
-            <StudentDetailModal
-              stuInfo={selectedStudent}
-              closeModal={closeModal}
-              updateModal={openUpdate}
-            ></StudentDetailModal>
+            <StudentDetailModal stuInfo={selectedStudent}></StudentDetailModal>
           )}
           {mode === "update" && selectedStudent && (
             <StudentUpdateFormModal
               stuInfo={selectedStudent}
-              closeModal={closeModal}
-              deleteModal={openDelete}
             ></StudentUpdateFormModal>
           )}
-          {mode === "delete" && selectedStudent &&  (
-            <StudentDeleteModal
-              closeModal={closeModal}
-              stuInfo={selectedStudent!}
-            ></StudentDeleteModal>
+          {mode === "delete" && selectedStudent && (
+            <StudentDeleteModal stuInfo={selectedStudent!}></StudentDeleteModal>
           )}
         </AnimatePresence>
       </div>

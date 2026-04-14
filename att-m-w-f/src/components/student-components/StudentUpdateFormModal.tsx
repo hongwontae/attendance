@@ -8,11 +8,10 @@ import CustomTextarea from "../custom/CustomTextarea";
 import CustomCheckbox from "../custom/CustomCheckbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateStudentApi } from "../../api/student/post-student-update-api";
+import { studentStore } from "../../store/stu-store";
 
 type Props = {
   stuInfo: CombinedType;
-  closeModal: () => void;
-  deleteModal : ()=>void;
 };
 
 export type FormValues = {
@@ -26,7 +25,12 @@ export type FormValues = {
 };
 
 
-function StudentUpdateFormModal({ stuInfo, closeModal, deleteModal }: Props) {
+function StudentUpdateFormModal({ stuInfo }: Props) {
+
+
+  const closeModal = studentStore(stu=>stu.closeModel);
+  const deleteModal = studentStore(stu=>stu.openDelete)
+
 
   const queryClient = useQueryClient();
 

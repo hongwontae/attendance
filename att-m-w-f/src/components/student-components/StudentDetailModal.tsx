@@ -3,17 +3,20 @@ import { useEscClose } from "../../custom-hooks/useEscClose";
 import StudentDetailInfo from "./StudentDetailInfo";
 import CustomButton from "../custom/CustomButton";
 import CustomModal from "../custom/CustomModal";
+import { studentStore } from "../../store/stu-store";
 
 type Props = {
-  closeModal: () => void;
-  updateModal: () => void;
   stuInfo: CombinedType;
 };
 
-function StudentDetailModal({ closeModal, stuInfo, updateModal }: Props) {
+function StudentDetailModal({stuInfo }: Props) {
+
+  const closeModal = studentStore(stu=>stu.closeModel);
+  const updateModal = studentStore(stu=>stu.openUpdate)
+
+
   useEscClose(closeModal, stuInfo);
 
-  console.log(stuInfo);
 
   return (
     <>

@@ -16,9 +16,9 @@ export class StudentService {
     private readonly studentRepo: Repository<StudentEntity>,
     private readonly adminService: AdminService,
     @InjectRepository(EnrollmentEntity)
-    private readonly enrollRepo : Repository<EnrollmentEntity>,
+    private readonly enrollRepo: Repository<EnrollmentEntity>,
     @InjectRepository(CourseEntity)
-    private readonly courseRepo : Repository<CourseEntity>
+    private readonly courseRepo: Repository<CourseEntity>,
   ) {}
 
   async createStudent(studentInfo: CreateStudentDto) {
@@ -85,10 +85,8 @@ export class StudentService {
     return oneStudent;
   }
 
-
-
   // 브라우저에서 기능하는 Service
-  async findStudentAndCourse(query: GetStudentDto, adminId : number) {
+  async findStudentAndCourse(query: GetStudentDto, adminId: number) {
     const { limit, page } = query;
 
     const [data, total] = await this.studentRepo.findAndCount({
@@ -98,7 +96,7 @@ export class StudentService {
         id: 'ASC',
       },
       relations: ['enrollments', 'enrollments.course'],
-      where : {admin : {id : adminId}}
+      where: { admin: { id: adminId } },
     });
 
     const refineStuAndCou = data.map(
@@ -134,51 +132,40 @@ export class StudentService {
     adminId: number,
     stuInfo: UpdateStudentDto,
   ) {
-
-
-
     const student = await this.studentRepo.findOne({
       where: { id: stuId, admin: { id: adminId } },
       relations: ['enrollments', 'enrollments.course'],
     });
 
-
-
-      if (!student) {
-        
-    throw new NotFoundException();
-  }
+    if (!student) {
+      throw new NotFoundException();
+    }
 
     Object.assign(student, stuInfo);
 
     await this.studentRepo.save(student);
 
-    if(stuInfo.courseIds){
-      await this.enrollRepo.delete({student : {id : student.id}})
+    if (stuInfo.courseIds) {
+      await this.enrollRepo.delete({ student: { id: student.id } });
 
-      
-
-      const enrollments = stuInfo.courseIds.map((id)=>{
+      const enrollments = stuInfo.courseIds.map((id) => {
         return this.enrollRepo.create({
           student,
-          course : {id},
-          admin : {id : adminId}
-        })
-      })
+          course: { id },
+          admin: { id: adminId },
+        });
+      });
 
-      await this.enrollRepo.save(enrollments)
+      await this.enrollRepo.save(enrollments);
     }
 
     return this.studentRepo.findOne({
-      where : {id : stuId},
-      relations : ['enrollments', 'enrollments.course']
-    })
-
-
-
+      where: { id: stuId },
+      relations: ['enrollments', 'enrollments.course'],
+    });
   }
 
-    async deleteOneStudent(id: number, adminId: number) {
+  async deleteOneStudent(id: number, adminId: number) {
     const oneStudent = await this.studentRepo.findOneBy({
       id,
       admin: { id: adminId },
@@ -191,15 +178,40 @@ export class StudentService {
     return await this.studentRepo.remove(oneStudent);
   }
 
-  async searchStudentsService(keyword : string){
-    if(!keyword){
+  async searchStudentsService(keyword: string) {
+    if (!keyword) {
       return [];
     }
 
-    return this.studentRepo.find({
-      where : {
-        name : ILike(`%${keyword}%`)
-      }
-    })
+    const students = await this.studentRepo.find({
+      where: {
+        name: ILike(`%${keyword}%`),
+      },
+      relations: ['enrollments', 'enrollments.course'],
+    });
+
+    const refineStudents = students.map(
+      ({ id, name, age, email, memo, phone, pPhone, enrollments }) => {
+        return {
+          id,
+          name,
+          age,
+          email,
+          memo,
+          phone,
+          pPhone,
+          courses: (enrollments ?? []).map(({ course }) => {
+            return {
+              id: course.id,
+              name: course.name,
+              description: course.description,
+            };
+          }),
+        };
+      },
+    );
+
+    return refineStudents;
+
   }
 }
