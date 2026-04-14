@@ -87,7 +87,16 @@ export class StudentService {
 
   // 브라우저에서 기능하는 Service
   async findStudentAndCourse(query: GetStudentDto, adminId: number) {
-    const { limit, page } = query;
+    const { limit, page, keyword } = query;
+
+      const whereCondition = keyword
+    ? {
+        admin: { id: adminId },
+        name: ILike(`%${keyword}%`),
+      }
+    : {
+        admin: { id: adminId },
+      };
 
     const [data, total] = await this.studentRepo.findAndCount({
       skip: (page - 1) * limit,
@@ -96,7 +105,7 @@ export class StudentService {
         id: 'ASC',
       },
       relations: ['enrollments', 'enrollments.course'],
-      where: { admin: { id: adminId } },
+      where: whereCondition,
     });
 
     const refineStuAndCou = data.map(

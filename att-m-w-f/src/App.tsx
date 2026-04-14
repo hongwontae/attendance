@@ -6,7 +6,7 @@ import TestPage from "./pages/test/TestPage";
 import AppInitComponent from "./components/utils/AppinitComponent";
 import ProtectRouter from "./components/utils/ProtectRouter";
 import StudentPage from "./pages/student/StudentPage";
-import SearchTestPage from "./pages/test/search-test/SearchTestPage";
+import Test2Page from "./pages/test/Test2Page";
 
 function App() {
   const queryClient = new QueryClient();
@@ -29,7 +29,7 @@ function App() {
           path : '/test2',
           element : (
             <ProtectRouter>
-              <SearchTestPage></SearchTestPage>
+              <Test2Page></Test2Page>
             </ProtectRouter>
           )
         },

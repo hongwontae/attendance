@@ -56,6 +56,7 @@ export class StudentController {
 
   @Get('/student/course')
   async getStudentCourse(@Query() query : GetStudentDto){
+    console.log(query.keyword)
     return await this.studentService.findStudentAndCourse(query, 1);
   }
 

@@ -8,11 +8,12 @@ import StudentDetailModal from "../../components/student-components/StudentDetai
 import StudentUpdateFormModal from "../../components/student-components/StudentUpdateFormModal";
 import StudentDeleteModal from "../../components/student-components/StudentDeleteModal";
 import { studentStore } from "../../store/stu-store";
+import StudentSearch from "../../components/student-components/StudentSearch";
 
 function StudentPage() {
-
   // 3개의 상태
   const [page, setPage] = useState<number>(1);
+  const [keyword, setKeyword] = useState<string>("");
   const selectedStudent = studentStore((stu) => stu.selectedStudent);
   const mode = studentStore((stu) => stu.mode);
 
@@ -23,12 +24,12 @@ function StudentPage() {
   }
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["students", page],
-    queryFn: () => getStudentAPi(page),
+    queryKey: ["students", page, keyword],
+    queryFn: () => getStudentAPi(page, keyword)
   });
 
   if (isError) {
-    return <div>Error!</div>;
+    return <div>데이터를 불러오는데 실패했습니다.</div>;
   }
 
   if (isLoading) {
@@ -45,6 +46,13 @@ function StudentPage() {
         <h1 className="text-3xl mb-10 font-pretendard font-semibold">
           학생 목록
         </h1>
+
+        <div>
+          <StudentSearch onSearch={(kw)=>{
+            setPage(1);
+            setKeyword(kw);
+          }}></StudentSearch>
+        </div>
 
         <div className="grow">
           <StudentInfo stuInfo={data} />
