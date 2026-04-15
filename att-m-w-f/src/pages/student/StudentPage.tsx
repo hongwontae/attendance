@@ -10,12 +10,11 @@ import StudentDeleteModal from "../../components/student-components/StudentDelet
 import { studentStore } from "../../store/stu-store";
 import StudentSearch from "../../components/student-components/StudentSearch";
 import { useDebounce } from "../../custom-hooks/useDebounce";
-import {useSearchParams} from 'react-router';
+import { useSearchParams } from "react-router";
 
 function StudentPage() {
   // 3개의 상태
 
- 
   const selectedStudent = studentStore((stu) => stu.selectedStudent);
   const mode = studentStore((stu) => stu.mode);
 
@@ -23,7 +22,7 @@ function StudentPage() {
 
   const page = Number(searchParams.get("page")) || 1;
   const urlKeyword = searchParams.get("keyword") || "";
-  
+
   const [inputValue, setInputValue] = useState(urlKeyword);
   const keyword = useDebounce(inputValue, 500);
 
@@ -44,21 +43,19 @@ function StudentPage() {
     }
   }, [keyword]);
 
-
-
   // chnage Handler
   function changePageHandler(page: number) {
     setSearchParams({
-    page: String(page),
-    keyword,
-  });
+      page: String(page),
+      keyword,
+    });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   const { data, isError, isLoading, isFetching } = useQuery({
     queryKey: ["students", page, keyword],
-    queryFn: ({signal}) => getStudentAPi(page, keyword, signal),
-    placeholderData : (prev)=>prev
+    queryFn: ({ signal }) => getStudentAPi(page, keyword, signal),
+    placeholderData: (prev) => prev,
   });
 
   if (isError) {
