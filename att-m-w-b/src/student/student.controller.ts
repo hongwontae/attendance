@@ -15,6 +15,7 @@ import { CreateStudentDto } from './dto/create-student-dto';
 import { StudentService } from './student.service';
 import { UpdateStudentDto } from './dto/update-student-dto';
 import { GetStudentDto } from './dto/get-student-dto';
+import { CreateCombinedDto } from './dto/create-combined-dto';
 
 @Controller('student')
 export class StudentController {
@@ -63,6 +64,11 @@ export class StudentController {
   @Get('/search')
   async searchStudents(@Query('keword') keword : string){
     return await this.studentService.searchStudentsService(keword)
+  }
+
+  @Post('/combined/create')
+  async createCombinedStudent(@Body() body : CreateCombinedDto){
+      return await this.studentService.createCombinedStudentService(body, 1)
   }
 
 }

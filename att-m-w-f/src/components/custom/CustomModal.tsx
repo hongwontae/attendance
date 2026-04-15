@@ -13,6 +13,7 @@ function CustomModal({ children }: Props) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       ></motion.div>
+      
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 text-black">
         <motion.div
           className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6"

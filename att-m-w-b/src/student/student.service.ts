@@ -8,6 +8,7 @@ import { AdminService } from 'src/admin/admin.service';
 import { GetStudentDto } from './dto/get-student-dto';
 import { CourseEntity } from 'src/course/course.entity';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
+import { CreateCombinedDto } from './dto/create-combined-dto';
 
 @Injectable()
 export class StudentService {
@@ -223,4 +224,32 @@ export class StudentService {
     return refineStudents;
 
   }
+
+  async createCombinedStudentService(stuInfo : CreateCombinedDto, adminId : number){
+    const student = await this.studentRepo.save({
+      name : stuInfo.name,
+      age : stuInfo.age,
+      email : stuInfo.email,
+      memo : stuInfo.memo,
+      phone : stuInfo.phone,
+      pPhone : stuInfo.pPhone,
+      admin : {id : adminId}
+    });
+
+      if(stuInfo.courses?.length){
+          const enrollments = stuInfo.courses.map((id)=>{
+            return {
+              student : {id : student.id},
+              course : {id : Number(id)},
+              admin : {id : adminId}
+            }
+          })
+          return this.enrollRepo.save(enrollments);
+      }
+   
+
+      return student;
+
+  }
+
 }
