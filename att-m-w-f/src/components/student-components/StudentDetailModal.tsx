@@ -13,9 +13,10 @@ function StudentDetailModal({stuInfo }: Props) {
 
   const closeModal = studentStore(stu=>stu.closeModel);
   const updateModal = studentStore(stu=>stu.openUpdate)
+  const mode = studentStore(stu => stu.mode);
 
 
-  useEscClose(closeModal, stuInfo);
+  useEscClose(closeModal, mode === 'detail');
 
 
   return (

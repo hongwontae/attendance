@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { CombinedType } from "../api/student/get-student-api";
 
-type ModeState = "detail" | "update" | "delete" | null;
+type ModeState = "detail" | "update" | "delete" |"create"| null;
 
 interface StudentState {
   mode: ModeState;
@@ -15,6 +15,7 @@ interface StudentState {
   openDetail: (student: CombinedType) => void;
   openUpdate: () => void;
   openDelete: () => void;
+  openCreate : ()=>void;
   closeModel: () => void;
 }
 
@@ -42,6 +43,9 @@ export const studentStore = create<StudentState>((set) => {
     },
     openDelete: () => {
       return set({ mode: "delete" });
+    },
+    openCreate : ()=>{
+      return set({mode : 'create'})
     },
     closeModel: () => {
       return set({

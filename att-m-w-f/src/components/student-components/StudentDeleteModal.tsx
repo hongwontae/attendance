@@ -13,8 +13,9 @@ type Props = {
 function StudentDeleteModal({ stuInfo }: Props) {
 
   const closeModal = studentStore(stu => stu.closeModel);
+  const mode = studentStore(stu => stu.mode);
 
-  useEscClose(closeModal, stuInfo);
+  useEscClose(closeModal, mode === 'delete');
   const queryClient = useQueryClient();
 
   const mutation = useMutation({

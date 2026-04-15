@@ -30,6 +30,7 @@ function StudentUpdateFormModal({ stuInfo }: Props) {
 
   const closeModal = studentStore(stu=>stu.closeModel);
   const deleteModal = studentStore(stu=>stu.openDelete)
+  const mode = studentStore(stu => stu.mode)
 
 
   const queryClient = useQueryClient();
@@ -65,7 +66,7 @@ function StudentUpdateFormModal({ stuInfo }: Props) {
   });
 }
 
-  useEscClose(closeModal, stuInfo);
+  useEscClose(closeModal, mode==='update');
 
   return (
     <>

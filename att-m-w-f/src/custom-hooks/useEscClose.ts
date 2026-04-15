@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { CombinedType } from "../api/student/get-student-api";
 
-export function useEscClose(onClose: () => void, isOpen: CombinedType) {
+export function useEscClose(onClose: () => void, isOpen: boolean) {
   useEffect(() => {
     if (!isOpen) return;
 

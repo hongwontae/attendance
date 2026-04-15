@@ -11,12 +11,16 @@ import { studentStore } from "../../store/stu-store";
 import StudentSearch from "../../components/student-components/StudentSearch";
 import { useDebounce } from "../../custom-hooks/useDebounce";
 import { useSearchParams } from "react-router";
+import StudentCreateFormModal from "../../components/student-components/StudentCreateFormModal";
 
 function StudentPage() {
   // 3개의 상태
 
   const selectedStudent = studentStore((stu) => stu.selectedStudent);
   const mode = studentStore((stu) => stu.mode);
+
+  // Test
+  const openCreate = studentStore(stu => stu.openCreate);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -103,6 +107,9 @@ function StudentPage() {
           />
         </section>
 
+          {/*create Test Button*/}
+          <button onClick={openCreate}>Create Test Button</button>
+
         <AnimatePresence>
           {mode === "detail" && selectedStudent && (
             <StudentDetailModal stuInfo={selectedStudent}></StudentDetailModal>
@@ -115,6 +122,7 @@ function StudentPage() {
           {mode === "delete" && selectedStudent && (
             <StudentDeleteModal stuInfo={selectedStudent!}></StudentDeleteModal>
           )}
+          {mode === 'create' ? <StudentCreateFormModal/> : null }
         </AnimatePresence>
       </div>
     </>
