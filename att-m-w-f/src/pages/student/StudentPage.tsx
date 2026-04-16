@@ -64,6 +64,8 @@ function StudentPage() {
     queryFn: ({ signal }) =>
       getStudentAPi({ page, name, phone, course, sort, order }, signal),
     placeholderData: (prev) => prev,
+    staleTime : 1000 * 60 * 5,
+    refetchOnWindowFocus : false
   });
 
   if (isError) return <div>에러 발생</div>;

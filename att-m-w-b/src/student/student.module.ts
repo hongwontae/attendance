@@ -4,7 +4,6 @@ import { StudentService } from './student.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudentEntity } from './student.entity';
 import { AdminModule } from 'src/admin/admin.module';
-import { CourseModule } from 'src/course/course.module';
 import { CourseEntity } from 'src/course/course.entity';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
 

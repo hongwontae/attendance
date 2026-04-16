@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from './student.entity';
 import { ILike, In, Repository } from 'typeorm';
@@ -88,27 +92,27 @@ export class StudentService {
     return oneStudent;
   }
 
-
   // 멀티테넌시를 위한 baseQuery
   // 이제 모든 queryBuilder는 baseSutdentQuery부터 시작해야한다. -> admin를 where로 걸러내는게 첫 번쨰
-  private baseStudentQuery(adminId : number){
-      return this.studentRepo.createQueryBuilder("student")
-              .leftJoin("student.admin", "admin")
-              .where("admin.id = :adminId", {adminId : adminId})
+  private baseStudentQuery(adminId: number) {
+    return this.studentRepo
+      .createQueryBuilder('student')
+      .leftJoin('student.admin', 'admin')
+      .where('admin.id = :adminId', { adminId: adminId });
   }
 
   // 브라우저에서 기능하는 Service
   async findStudentAndCourse(query: GetStudentDto, adminId: number) {
     const { limit, page, keyword } = query;
 
-      const whereCondition = keyword
-    ? {
-        admin: { id: adminId },
-        name: ILike(`%${keyword}%`),
-      }
-    : {
-        admin: { id: adminId },
-      };
+    const whereCondition = keyword
+      ? {
+          admin: { id: adminId },
+          name: ILike(`%${keyword}%`),
+        }
+      : {
+          admin: { id: adminId },
+        };
 
     const [data, total] = await this.studentRepo.findAndCount({
       skip: (page - 1) * limit,
@@ -153,37 +157,34 @@ export class StudentService {
     adminId: number,
     stuInfo: UpdateStudentDto,
   ) {
-
     const student = await this.studentRepo.findOne({
       where: { id: stuId, admin: { id: adminId } },
       relations: ['enrollments', 'enrollments.course'],
     });
 
-
     if (!student) {
       throw new NotFoundException();
     }
 
-
     Object.assign(student, stuInfo);
     await this.studentRepo.save(student);
 
-
     if (stuInfo.courseIds) {
-
       const vaildCourses = await this.courseRepo.find({
-        where : {
-          id : In(stuInfo.courseIds.map(Number)),
-          admin : {id : adminId}
-        }
+        where: {
+          id: In(stuInfo.courseIds.map(Number)),
+          admin: { id: adminId },
+        },
       });
 
-      if(vaildCourses.length !== stuInfo.courseIds.length){
-          throw new ForbiddenException('다른 관리자의 course가 포함되었습니다.')
+      if (vaildCourses.length !== stuInfo.courseIds.length) {
+        throw new ForbiddenException('다른 관리자의 course가 포함되었습니다.');
       }
 
-
-      await this.enrollRepo.delete({ student: { id: student.id }, admin : {id : adminId} });
+      await this.enrollRepo.delete({
+        student: { id: student.id },
+        admin: { id: adminId },
+      });
 
       const enrollments = vaildCourses.map((course) => {
         return this.enrollRepo.create({
@@ -197,93 +198,124 @@ export class StudentService {
     }
 
     return this.studentRepo.findOne({
-      where: { id: stuId, admin : {id : adminId} },
+      where: { id: stuId, admin: { id: adminId } },
       relations: ['enrollments', 'enrollments.course'],
     });
   }
 
   async deleteOneStudent(id: number, adminId: number) {
-    const oneStudent = await this.studentRepo.findOneBy({
+    const result = await this.studentRepo.delete({
       id,
       admin: { id: adminId },
     });
 
-    if (!oneStudent) {
+    if (result.affected === 0) {
       throw new NotFoundException('삭제하고자 하는 학생이 없습니다.');
     }
 
-    return await this.studentRepo.remove(oneStudent);
+    return { message: '삭제 완료' };
   }
 
-async searchStudentsService(dto: SearchStudentDto, adminId : number) {
+async searchStudentsService(dto: SearchStudentDto, adminId: number) {
   const {
     name,
     phone,
     course,
     page = 1,
     limit = 10,
-    order = "DESC",
-    sort = "createdAt",
+    order = 'DESC',
+    sort = 'createdAt',
   } = dto;
 
-  const query = this.studentRepo
-    .createQueryBuilder("student")
-    .leftJoinAndSelect("student.enrollments", "enrollment")
-    .leftJoinAndSelect("enrollment.course", "course")
-    .leftJoin("student.admin", "admin")
+  // ✅ 정렬 안전 처리
+  const allowedSort = ['name', 'age', 'createdAt'];
+  const sortField = allowedSort.includes(sort) ? sort : 'createdAt';
+  const sortOrder = order === 'ASC' ? 'ASC' : 'DESC';
 
-    query.where("admin.id = :adminId", {adminId})
-    
+  // 🔥 1️⃣ 학생만 조회 (핵심)
+  const baseQuery = this.studentRepo
+    .createQueryBuilder('student')
+    .leftJoin('student.admin', 'admin')
+    .where('admin.id = :adminId', { adminId });
 
-  // ✅ 필터
+  // ✅ 이름 필터
   if (name) {
-    query.andWhere("student.name LIKE :name", {
+    baseQuery.andWhere('student.name LIKE :name', {
       name: `%${name}%`,
     });
   }
 
+  // ✅ 전화번호 필터
   if (phone) {
-    query.andWhere("student.phone LIKE :phone", {
+    baseQuery.andWhere('student.phone LIKE :phone', {
       phone: `%${phone}%`,
     });
   }
 
+  // 🔥 course 필터 (서브쿼리로 안전하게)
   if (course) {
-    query.andWhere("course.name LIKE :course", {
-      course: `%${course}%`,
-    });
+    baseQuery
+      .andWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('enrollment.studentId')
+          .from('enrollment', 'enrollment')
+          .leftJoin('enrollment.course', 'course')
+          .where('course.name LIKE :course')
+          .getQuery();
+
+        return `student.id IN ${subQuery}`;
+      })
+      .setParameter('course', `%${course}%`);
   }
 
-  // 🔥 ✅ 여기 넣는다 (핵심)
-  const allowedSort = ["name", "age", "createdAt"];
+  // ✅ 정렬 + 페이지네이션
+  baseQuery.orderBy(`student.${sortField}`, sortOrder);
+  baseQuery.skip((page - 1) * limit).take(limit);
 
-  const sortField = allowedSort.includes(sort) ? sort : "createdAt";
-  const sortOrder = order === "ASC" ? "ASC" : "DESC";
+  // 🔥 실행 (정확한 total 보장)
+  const [students, total] = await baseQuery.getManyAndCount();
 
-  query.orderBy(`student.${sortField}`, sortOrder);
+  // 🔥 2️⃣ course 따로 조회
+  const studentIds = students.map((s) => s.id);
 
-  // ✅ 페이지네이션 (정렬 이후)
-  query.skip((page - 1) * limit).take(limit);
+  let courseMap = new Map<number, any[]>();
 
-  const [students, total] = await query.getManyAndCount();
+  if (studentIds.length > 0) {
+   const enrollments = await this.enrollRepo.find({
+  where: {
+    student: { id: In(studentIds) },
+    admin: { id: adminId },
+  },
+  relations: ['course', 'student'], // 👈 핵심
+});
 
-  const refined = students.map(
-    ({ id, name, age, email, memo, phone, pPhone, enrollments }) => ({
-      id,
-      name,
-      age,
-      email,
-      memo,
-      phone,
-      pPhone,
-      courses: (enrollments ?? []).map(({ course }) => ({
-        id: course.id,
-        name: course.name,
-        description: course.description,
-      })),
-    })
-  );
+    for (const e of enrollments) {
+      if (!courseMap.has(e.student.id)) {
+        courseMap.set(e.student.id, []);
+      }
 
+      courseMap.get(e.student.id)!.push({
+        id: e.course.id,
+        name: e.course.name,
+        description: e.course.description,
+      });
+    }
+  }
+
+  // 🔥 3️⃣ 최종 데이터 가공
+  const refined = students.map((s) => ({
+    id: s.id,
+    name: s.name,
+    age: s.age,
+    email: s.email,
+    memo: s.memo,
+    phone: s.phone,
+    pPhone: s.pPhone,
+    courses: courseMap.get(s.id) ?? [],
+  }));
+
+  // ✅ 반환
   return {
     data: refined,
     total,
@@ -292,31 +324,31 @@ async searchStudentsService(dto: SearchStudentDto, adminId : number) {
   };
 }
 
-  async createCombinedStudentService(stuInfo : CreateCombinedDto, adminId : number){
+  async createCombinedStudentService(
+    stuInfo: CreateCombinedDto,
+    adminId: number,
+  ) {
     const student = await this.studentRepo.save({
-      name : stuInfo.name,
-      age : stuInfo.age,
-      email : stuInfo.email,
-      memo : stuInfo.memo,
-      phone : stuInfo.phone,
-      pPhone : stuInfo.pPhone,
-      admin : {id : adminId}
+      name: stuInfo.name,
+      age: stuInfo.age,
+      email: stuInfo.email,
+      memo: stuInfo.memo,
+      phone: stuInfo.phone,
+      pPhone: stuInfo.pPhone,
+      admin: { id: adminId },
     });
 
-      if(stuInfo.courses?.length){
-          const enrollments = stuInfo.courses.map((id)=>{
-            return {
-              student : {id : student.id},
-              course : {id : Number(id)},
-              admin : {id : adminId}
-            }
-          })
-          return this.enrollRepo.save(enrollments);
-      }
-   
+    if (stuInfo.courses?.length) {
+      const enrollments = stuInfo.courses.map((id) => {
+        return {
+          student: { id: student.id },
+          course: { id: Number(id) },
+          admin: { id: adminId },
+        };
+      });
+      return this.enrollRepo.save(enrollments);
+    }
 
-      return student;
-
+    return student;
   }
-
 }

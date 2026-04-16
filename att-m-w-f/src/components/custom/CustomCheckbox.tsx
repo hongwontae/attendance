@@ -22,7 +22,8 @@ function CustomCheckbox<T extends FieldValues>({
 
   const {data, isLoading, isError} = useQuery({
     queryKey : ['checkbox-course'],
-    queryFn : getCoursesApi
+    queryFn : getCoursesApi,
+    staleTime : 10000 * 60 * 5,
   })
 
   if(isLoading){
