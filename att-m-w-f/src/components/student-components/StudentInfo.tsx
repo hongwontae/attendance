@@ -7,6 +7,7 @@ type props = {
 };
 
 function StudentInfo({ stuInfo }: props) {
+  console.log(stuInfo)
 
   const openDetail = studentStore((stu)=>stu.openDetail)
 

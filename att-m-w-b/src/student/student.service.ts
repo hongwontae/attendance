@@ -9,6 +9,7 @@ import { GetStudentDto } from './dto/get-student-dto';
 import { CourseEntity } from 'src/course/course.entity';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
 import { CreateCombinedDto } from './dto/create-combined-dto';
+import { SearchStudentDto } from './dto/search-student-dto';
 
 @Injectable()
 export class StudentService {
@@ -188,42 +189,79 @@ export class StudentService {
     return await this.studentRepo.remove(oneStudent);
   }
 
-  async searchStudentsService(keyword: string) {
-    if (!keyword) {
-      return [];
-    }
+async searchStudentsService(dto: SearchStudentDto) {
+  const {
+    name,
+    phone,
+    course,
+    page = 1,
+    limit = 10,
+    order = "DESC",
+    sort = "createdAt",
+  } = dto;
 
-    const students = await this.studentRepo.find({
-      where: {
-        name: ILike(`%${keyword}%`),
-      },
-      relations: ['enrollments', 'enrollments.course'],
+  const query = this.studentRepo
+    .createQueryBuilder("student")
+    .leftJoinAndSelect("student.enrollments", "enrollment")
+    .leftJoinAndSelect("enrollment.course", "course");
+
+  // ✅ 필터
+  if (name) {
+    query.andWhere("student.name LIKE :name", {
+      name: `%${name}%`,
     });
-
-    const refineStudents = students.map(
-      ({ id, name, age, email, memo, phone, pPhone, enrollments }) => {
-        return {
-          id,
-          name,
-          age,
-          email,
-          memo,
-          phone,
-          pPhone,
-          courses: (enrollments ?? []).map(({ course }) => {
-            return {
-              id: course.id,
-              name: course.name,
-              description: course.description,
-            };
-          }),
-        };
-      },
-    );
-
-    return refineStudents;
-
   }
+
+  if (phone) {
+    query.andWhere("student.phone LIKE :phone", {
+      phone: `%${phone}%`,
+    });
+  }
+
+  if (course) {
+    query.andWhere("course.name LIKE :course", {
+      course: `%${course}%`,
+    });
+  }
+
+  // 🔥 ✅ 여기 넣는다 (핵심)
+  const allowedSort = ["name", "age", "createdAt"];
+
+  const sortField = allowedSort.includes(sort) ? sort : "createdAt";
+  const sortOrder = order === "ASC" ? "ASC" : "DESC";
+  console.log(sortOrder);
+
+  query.orderBy(`student.${sortField}`, sortOrder);
+
+  // ✅ 페이지네이션 (정렬 이후)
+  query.skip((page - 1) * limit).take(limit);
+
+  const [students, total] = await query.getManyAndCount();
+
+  const refined = students.map(
+    ({ id, name, age, email, memo, phone, pPhone, enrollments }) => ({
+      id,
+      name,
+      age,
+      email,
+      memo,
+      phone,
+      pPhone,
+      courses: (enrollments ?? []).map(({ course }) => ({
+        id: course.id,
+        name: course.name,
+        description: course.description,
+      })),
+    })
+  );
+
+  return {
+    data: refined,
+    total,
+    page,
+    lastPage: Math.ceil(total / limit),
+  };
+}
 
   async createCombinedStudentService(stuInfo : CreateCombinedDto, adminId : number){
     const student = await this.studentRepo.save({

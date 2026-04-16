@@ -1,28 +1,35 @@
 import type { SummaryStudentType } from "../../types/student-type/student-type";
 import type { SummaryCourseType } from "../../types/course-type/course-type";
-import type { PaginatedResponse } from "../../types/util-type/page-type";
 
 export type CombinedType = SummaryStudentType & {
   courses: SummaryCourseType[];
 };
 
 export const getStudentAPi = async (
-  page: number,
-  keyword: string,
-  signal : AbortSignal
-): Promise<PaginatedResponse<CombinedType>> => {
-  const response = await fetch(
-    `http://localhost:3000/student/student/course/?page=${page}&limit=10&keyword=${keyword}`,
-    {
-      method: "GET",
-      credentials: "include",
-      signal
-    },
-  );
+  params: {
+    page: number;
+    name?: string;
+    phone?: string;
+    course?: string;
+    sort ? : string;
+    order? : string
+  },
+  signal?: AbortSignal
+) => {
+  const query = new URLSearchParams();
 
-  if (!response.ok) {
-    throw new Error("eerrr");
-  }
+  query.append("page", String(params.page));
+  if (params.name) query.append("name", params.name);
+  if (params.phone) query.append("phone", params.phone);
+  if (params.course) query.append("course", params.course);
+  if(params.sort) query.append('sort', params.sort);
+  if(params.order) query.append('order', params.order)
 
-  return await response.json();
+  const res = await fetch(`http://localhost:3000/student/search?${query.toString()}`, {
+    credentials: "include",
+    method : 'GET',
+    signal,
+  });
+
+  return res.json();
 };

@@ -16,6 +16,7 @@ import { StudentService } from './student.service';
 import { UpdateStudentDto } from './dto/update-student-dto';
 import { GetStudentDto } from './dto/get-student-dto';
 import { CreateCombinedDto } from './dto/create-combined-dto';
+import { SearchStudentDto } from './dto/search-student-dto';
 
 @Controller('student')
 export class StudentController {
@@ -62,8 +63,9 @@ export class StudentController {
   }
 
   @Get('/search')
-  async searchStudents(@Query('keword') keword : string){
-    return await this.studentService.searchStudentsService(keword)
+  async searchStudents(@Query() query : SearchStudentDto){
+    console.log(query);
+    return await this.studentService.searchStudentsService(query)
   }
 
   @Post('/combined/create')
