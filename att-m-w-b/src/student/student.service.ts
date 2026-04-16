@@ -9,7 +9,6 @@ import { ILike, In, Repository } from 'typeorm';
 import { CreateStudentDto } from './dto/create-student-dto';
 import { UpdateStudentDto } from './dto/update-student-dto';
 import { AdminService } from 'src/admin/admin.service';
-import { GetStudentDto } from './dto/get-student-dto';
 import { CourseEntity } from 'src/course/course.entity';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
 import { CreateCombinedDto } from './dto/create-combined-dto';
@@ -101,57 +100,7 @@ export class StudentService {
       .where('admin.id = :adminId', { adminId: adminId });
   }
 
-  // 브라우저에서 기능하는 Service
-  async findStudentAndCourse(query: GetStudentDto, adminId: number) {
-    const { limit, page, keyword } = query;
-
-    const whereCondition = keyword
-      ? {
-          admin: { id: adminId },
-          name: ILike(`%${keyword}%`),
-        }
-      : {
-          admin: { id: adminId },
-        };
-
-    const [data, total] = await this.studentRepo.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-      order: {
-        id: 'ASC',
-      },
-      relations: ['enrollments', 'enrollments.course'],
-      where: whereCondition,
-    });
-
-    const refineStuAndCou = data.map(
-      ({ id, name, age, email, memo, phone, pPhone, enrollments }) => {
-        return {
-          id,
-          name,
-          age,
-          email,
-          memo,
-          phone,
-          pPhone,
-          courses: (enrollments ?? []).map(({ course }) => {
-            return {
-              id: course.id,
-              name: course.name,
-              description: course.description,
-            };
-          }),
-        };
-      },
-    );
-    return {
-      data: refineStuAndCou,
-      total,
-      page,
-      lastPage: Math.ceil(total / limit),
-    };
-  }
-
+  // 실제 프론트와 연동하는 Service
   async updateStudentAndCourse(
     stuId: number,
     adminId: number,
@@ -233,10 +182,7 @@ async searchStudentsService(dto: SearchStudentDto, adminId: number) {
   const sortOrder = order === 'ASC' ? 'ASC' : 'DESC';
 
   // 🔥 1️⃣ 학생만 조회 (핵심)
-  const baseQuery = this.studentRepo
-    .createQueryBuilder('student')
-    .leftJoin('student.admin', 'admin')
-    .where('admin.id = :adminId', { adminId });
+  const baseQuery = this.baseStudentQuery(adminId);
 
   // ✅ 이름 필터
   if (name) {
@@ -324,31 +270,49 @@ async searchStudentsService(dto: SearchStudentDto, adminId: number) {
   };
 }
 
-  async createCombinedStudentService(
-    stuInfo: CreateCombinedDto,
-    adminId: number,
-  ) {
-    const student = await this.studentRepo.save({
-      name: stuInfo.name,
-      age: stuInfo.age,
-      email: stuInfo.email,
-      memo: stuInfo.memo,
-      phone: stuInfo.phone,
-      pPhone: stuInfo.pPhone,
-      admin: { id: adminId },
+ async createCombinedStudentService(
+  stuInfo: CreateCombinedDto,
+  adminId: number,
+) {
+  // 1️⃣ 학생 생성
+  const student = await this.studentRepo.save({
+    name: stuInfo.name,
+    age: stuInfo.age,
+    email: stuInfo.email,
+    memo: stuInfo.memo,
+    phone: stuInfo.phone,
+    pPhone: stuInfo.pPhone,
+    admin: { id: adminId },
+  });
+
+  // 2️⃣ course 검증 (핵심 🔥)
+  if (stuInfo.courses?.length) {
+    const courseIds = stuInfo.courses.map(Number);
+
+    const validCourses = await this.courseRepo.find({
+      where: {
+        id: In(courseIds),
+        admin: { id: adminId },
+      },
     });
 
-    if (stuInfo.courses?.length) {
-      const enrollments = stuInfo.courses.map((id) => {
-        return {
-          student: { id: student.id },
-          course: { id: Number(id) },
-          admin: { id: adminId },
-        };
-      });
-      return this.enrollRepo.save(enrollments);
+    // ❗ 다른 admin 데이터 포함되면 차단
+    if (validCourses.length !== courseIds.length) {
+      throw new ForbiddenException('잘못된 course 요청');
     }
 
-    return student;
+    // 3️⃣ enroll 생성 (검증된 것만 사용)
+    const enrollments = validCourses.map((course) =>
+      this.enrollRepo.create({
+        student,
+        course,
+        admin: { id: adminId },
+      }),
+    );
+
+    await this.enrollRepo.save(enrollments);
   }
+
+  return student;
+}
 }

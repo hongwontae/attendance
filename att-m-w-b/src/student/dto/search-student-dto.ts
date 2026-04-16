@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsOptional } from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 
 export class SearchStudentDto {
   @IsOptional()
@@ -11,17 +11,24 @@ export class SearchStudentDto {
   limit?: number = 10;
 
   @IsOptional()
+  @IsString()
   name?: string;
 
   @IsOptional()
+  @IsString()
   phone?: string;
 
   @IsOptional()
+  @IsString()
   course?: string;
 
   @IsOptional()
+  @IsString()
+  @IsIn(['name', 'age', 'createdAt'])
   sort?: string;
 
   @IsOptional()
+  @IsString()
+  @IsIn(["ASC", "DESC"])
   order?: 'ASC' | 'DESC';
 }
