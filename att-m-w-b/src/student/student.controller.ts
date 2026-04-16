@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ import { UpdateStudentDto } from './dto/update-student-dto';
 import { GetStudentDto } from './dto/get-student-dto';
 import { CreateCombinedDto } from './dto/create-combined-dto';
 import { SearchStudentDto } from './dto/search-student-dto';
+import { CurrentAdmin } from 'src/decorator/current-admin';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('student')
 export class StudentController {
@@ -50,27 +53,30 @@ export class StudentController {
     return await this.studentService.findOneStudent(id, 1);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete('remove/:id')
-  async deleteOneStudent(@Param('id', ParseIntPipe) id : number){
-      const deleteOneStu = await this.studentService.deleteOneStudent(id, 1);
+  async deleteOneStudent(@Param('id', ParseIntPipe) id : number, @CurrentAdmin() adminId : number){
+      const deleteOneStu = await this.studentService.deleteOneStudent(id, adminId);
       return deleteOneStu;
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('/student/course')
-  async getStudentCourse(@Query() query : GetStudentDto){
+  async getStudentCourse(@Query() query : GetStudentDto, @CurrentAdmin() adminId : number){
     console.log(query.keyword)
-    return await this.studentService.findStudentAndCourse(query, 1);
+    return await this.studentService.findStudentAndCourse(query, adminId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('/search')
-  async searchStudents(@Query() query : SearchStudentDto){
-    console.log(query);
-    return await this.studentService.searchStudentsService(query)
+  async searchStudents(@Query() query : SearchStudentDto, @CurrentAdmin() adminId : number){
+    return await this.studentService.searchStudentsService(query, adminId)
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('/combined/create')
-  async createCombinedStudent(@Body() body : CreateCombinedDto){
-      return await this.studentService.createCombinedStudentService(body, 1)
+  async createCombinedStudent(@Body() body : CreateCombinedDto, @CurrentAdmin() adminId : number){
+      return await this.studentService.createCombinedStudentService(body, adminId)
   }
 
 }

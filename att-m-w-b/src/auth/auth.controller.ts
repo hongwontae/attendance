@@ -17,7 +17,7 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'lax',
       secure: false,
-      maxAge: 1000 * 60 * 15,
+      maxAge: 10000 * 60 * 15,
     });
 
     return { message: 'login success' };
@@ -36,7 +36,7 @@ export class AuthController {
       httpOnly : true,
       sameSite : 'lax',
       secure : false,
-      maxAge : 1000*60*15,
+      maxAge : 10000*60*15,
     });
 
     return {message : '로그아웃 성공'}

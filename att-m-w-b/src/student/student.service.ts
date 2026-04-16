@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from './student.entity';
 import { ILike, In, Repository } from 'typeorm';
@@ -23,6 +23,7 @@ export class StudentService {
     private readonly courseRepo: Repository<CourseEntity>,
   ) {}
 
+  // CRUD TEST Service
   async createStudent(studentInfo: CreateStudentDto) {
     // fk를 가진 엔티티 자체를 만들어서 admin fk 키에 추가해야 제대로 fk가 생성됩니다.
     const admin = await this.adminService.findAdminId(studentInfo.adminId);
@@ -87,6 +88,15 @@ export class StudentService {
     return oneStudent;
   }
 
+
+  // 멀티테넌시를 위한 baseQuery
+  // 이제 모든 queryBuilder는 baseSutdentQuery부터 시작해야한다. -> admin를 where로 걸러내는게 첫 번쨰
+  private baseStudentQuery(adminId : number){
+      return this.studentRepo.createQueryBuilder("student")
+              .leftJoin("student.admin", "admin")
+              .where("admin.id = :adminId", {adminId : adminId})
+  }
+
   // 브라우저에서 기능하는 Service
   async findStudentAndCourse(query: GetStudentDto, adminId: number) {
     const { limit, page, keyword } = query;
@@ -143,26 +153,42 @@ export class StudentService {
     adminId: number,
     stuInfo: UpdateStudentDto,
   ) {
+
     const student = await this.studentRepo.findOne({
       where: { id: stuId, admin: { id: adminId } },
       relations: ['enrollments', 'enrollments.course'],
     });
 
+
     if (!student) {
       throw new NotFoundException();
     }
 
-    Object.assign(student, stuInfo);
 
+    Object.assign(student, stuInfo);
     await this.studentRepo.save(student);
 
-    if (stuInfo.courseIds) {
-      await this.enrollRepo.delete({ student: { id: student.id } });
 
-      const enrollments = stuInfo.courseIds.map((id) => {
+    if (stuInfo.courseIds) {
+
+      const vaildCourses = await this.courseRepo.find({
+        where : {
+          id : In(stuInfo.courseIds.map(Number)),
+          admin : {id : adminId}
+        }
+      });
+
+      if(vaildCourses.length !== stuInfo.courseIds.length){
+          throw new ForbiddenException('다른 관리자의 course가 포함되었습니다.')
+      }
+
+
+      await this.enrollRepo.delete({ student: { id: student.id }, admin : {id : adminId} });
+
+      const enrollments = vaildCourses.map((course) => {
         return this.enrollRepo.create({
           student,
-          course: { id },
+          course,
           admin: { id: adminId },
         });
       });
@@ -171,7 +197,7 @@ export class StudentService {
     }
 
     return this.studentRepo.findOne({
-      where: { id: stuId },
+      where: { id: stuId, admin : {id : adminId} },
       relations: ['enrollments', 'enrollments.course'],
     });
   }
@@ -189,7 +215,7 @@ export class StudentService {
     return await this.studentRepo.remove(oneStudent);
   }
 
-async searchStudentsService(dto: SearchStudentDto) {
+async searchStudentsService(dto: SearchStudentDto, adminId : number) {
   const {
     name,
     phone,
@@ -203,7 +229,11 @@ async searchStudentsService(dto: SearchStudentDto) {
   const query = this.studentRepo
     .createQueryBuilder("student")
     .leftJoinAndSelect("student.enrollments", "enrollment")
-    .leftJoinAndSelect("enrollment.course", "course");
+    .leftJoinAndSelect("enrollment.course", "course")
+    .leftJoin("student.admin", "admin")
+
+    query.where("admin.id = :adminId", {adminId})
+    
 
   // ✅ 필터
   if (name) {
@@ -229,7 +259,6 @@ async searchStudentsService(dto: SearchStudentDto) {
 
   const sortField = allowedSort.includes(sort) ? sort : "createdAt";
   const sortOrder = order === "ASC" ? "ASC" : "DESC";
-  console.log(sortOrder);
 
   query.orderBy(`student.${sortField}`, sortOrder);
 

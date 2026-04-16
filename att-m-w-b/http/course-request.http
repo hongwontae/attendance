@@ -32,4 +32,4 @@ Get http://localhost:3000/course/detail/1
 
 
 ### Delete One Course
-DELETE http://localhost:3000/course/remove/1
+DELETE http://localhost:3000/course/remove/5

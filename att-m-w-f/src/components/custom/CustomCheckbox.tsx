@@ -1,4 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import type { FieldValues, Path, UseFormRegister } from "react-hook-form";
+import { getCoursesApi } from "../../api/course/get-courses-api";
 
 export const existCourses = [
   { id: 1, name: "JavaScript & React" },
@@ -17,13 +19,30 @@ function CustomCheckbox<T extends FieldValues>({
   register,
   name,
 }: Props<T>) {
+
+  const {data, isLoading, isError} = useQuery({
+    queryKey : ['checkbox-course'],
+    queryFn : getCoursesApi
+  })
+
+  if(isLoading){
+    return <div>loading..</div>
+  }
+  if(isError){
+    return <div>Error!</div>
+  }
+  if(!data){
+    return null;
+  }
+  
+
   return (
     <>
       <div className="flex flex-row gap-6 justify-center items-center">
         <p>{checkFieldName}</p>
 
         <section className="grid grid-cols-3">
-          {existCourses.map((course) => (
+          {data.map((course) => (
             <label key={course.id} className="flex items-center gap-2 justify-center">
               <input
                 type="checkbox"

@@ -7,6 +7,7 @@ import AppInitComponent from "./components/utils/AppinitComponent";
 import ProtectRouter from "./components/utils/ProtectRouter";
 import StudentPage from "./pages/student/StudentPage";
 import Test2Page from "./pages/test/Test2Page";
+import CoursePage from "./pages/course/CoursePage";
 
 function App() {
   const queryClient = new QueryClient();
@@ -39,6 +40,12 @@ function App() {
             <StudentPage></StudentPage>
           </ProtectRouter>
         },
+        {
+          path : '/courses',
+          element : <ProtectRouter>
+            <CoursePage></CoursePage>
+          </ProtectRouter>
+        }
 
 
       ],

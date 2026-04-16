@@ -12,7 +12,7 @@ export class CourseController {
     @Post('save')
     @UsePipes(new ValidationPipe({whitelist : true, transform : true}))
     async createCourse(@Body() body : CreateCourseDto){
-        return await this.courseService.createCourse(body, 2);
+        return await this.courseService.createCourse(body, 1);
     }
 
     @Patch('update/:id')
@@ -38,7 +38,7 @@ export class CourseController {
 
     @Delete('remove/:id')
     async deleteOneCourse(@Param('id', ParseIntPipe) id : number){
-        return await this.courseService.deleteCourse(id,1);
+        return await this.courseService.deleteCourse(id,2);
     }
 
     
