@@ -19,14 +19,21 @@ function CustomCheckbox<T extends FieldValues>({
 }: Props<T>) {
   return (
     <>
-      <div className="flex flex-row gap-6 justify-center">
+      <div className="flex flex-row gap-6 justify-center items-center">
         <p>{checkFieldName}</p>
-        {existCourses.map((course) => (
-          <label key={course.id} className="flex items-center gap-2">
-            <input type="checkbox" value={String(course.id)} {...register(name)} />
-            <span className="text-[0.8rem]">{course.name}</span>
-          </label>
-        ))}
+
+        <section className="grid grid-cols-3">
+          {existCourses.map((course) => (
+            <label key={course.id} className="flex items-center gap-2 justify-center">
+              <input
+                type="checkbox"
+                value={String(course.id)}
+                {...register(name)}
+              />
+              <span className="text-[0.8rem]">{course.name}</span>
+            </label>
+          ))}
+        </section>
       </div>
     </>
   );

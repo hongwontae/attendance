@@ -11,7 +11,7 @@ function StudentSearch({value, onChange} : Props){
   return (
     <div className="mb-5">
       <input
-        className="border p-2 rounded-2xl font-pretendard"
+        className="border p-2 rounded-2xl font-pretendard w-1/4"
         placeholder="Search"
         value={value}
         onChange={(e) => onChange(e.target.value)}

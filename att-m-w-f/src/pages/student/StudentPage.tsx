@@ -12,6 +12,7 @@ import StudentSearch from "../../components/student-components/StudentSearch";
 import { useDebounce } from "../../custom-hooks/useDebounce";
 import { useSearchParams } from "react-router";
 import StudentCreateFormModal from "../../components/student-components/StudentCreateFormModal";
+import CustomIconButton from "../../components/custom/CustomIconButton";
 
 function StudentPage() {
   // 3개의 상태
@@ -20,7 +21,7 @@ function StudentPage() {
   const mode = studentStore((stu) => stu.mode);
 
   // Test
-  const openCreate = studentStore(stu => stu.openCreate);
+  const openCreate = studentStore((stu) => stu.openCreate);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -77,18 +78,21 @@ function StudentPage() {
   return (
     <>
       <div className="flex flex-col min-h-screen p-5 text-center">
-        <h1 className="text-3xl mb-10 font-pretendard font-semibold">
-          학생 목록
-        </h1>
+        <div className="relative mb-6">
+          {/* 제목 (가운데 유지) */}
+          <h1 className="text-3xl font-semibold text-center">학생 목록</h1>
 
-        <div>
-          <StudentSearch
-            value={inputValue}
-            onChange={(v) => {
-              setInputValue(v);
-            }}
-          ></StudentSearch>
+          {/* 오른쪽 끝 버튼 */}
+          <CustomIconButton
+            onClick={openCreate}
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-blue-500 hover:bg-red-500 text-white px-4 py-2 rounded"
+          />
         </div>
+
+        {/* Search */}
+        <StudentSearch value={inputValue} onChange={(v) => setInputValue(v)} />
+
+        {/* Create 버튼 */}
 
         <div className="grow">
           {isFetching && (
@@ -107,9 +111,6 @@ function StudentPage() {
           />
         </section>
 
-          {/*create Test Button*/}
-          <button onClick={openCreate}>Create Test Button</button>
-
         <AnimatePresence>
           {mode === "detail" && selectedStudent && (
             <StudentDetailModal stuInfo={selectedStudent}></StudentDetailModal>
@@ -122,7 +123,7 @@ function StudentPage() {
           {mode === "delete" && selectedStudent && (
             <StudentDeleteModal stuInfo={selectedStudent!}></StudentDeleteModal>
           )}
-          {mode === 'create' ? <StudentCreateFormModal/> : null }
+          {mode === "create" ? <StudentCreateFormModal /> : null}
         </AnimatePresence>
       </div>
     </>
