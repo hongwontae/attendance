@@ -1,10 +1,13 @@
 import {PartialType} from '@nestjs/mapped-types'
 import { CreateStudentDto } from './create-student-dto';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdateStudentDto extends PartialType(CreateStudentDto) {
 
     @IsOptional()
-    @IsNumber({}, {each : true})
+    @IsInt({each : true})
+    @Type(()=>Number)
+    @IsArray()
     courseIds? : number[]
 };

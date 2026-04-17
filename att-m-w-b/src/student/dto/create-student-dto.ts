@@ -1,21 +1,18 @@
 import { Type } from "class-transformer";
-import { IsEmail, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateStudentDto {
-
-    // pipe 설정에서 whilelist : true -> @Type 동작
-    // pipe 설정에서 transform : true -> DTO에 없는 값 제거
     
     @IsString()
     name : string;
 
     @Type(()=>Number)
-    @IsNumber()
+    @IsInt()
     adminId : number;
 
     @Type(()=>Number)
     @IsOptional()
-    @IsNumber()
+    @IsInt()
     age? : number;
 
     @IsString()

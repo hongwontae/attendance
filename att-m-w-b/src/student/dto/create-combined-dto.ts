@@ -1,21 +1,24 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateCombinedDto {
   @IsString()
   name: string;
 
-  @IsNumber()
-  age: number;
+  @IsInt()
+  @IsOptional()
+  age?: number;
 
   @IsEmail()
   @IsOptional()
   email?: string;
 
   @IsString()
-  phone: string;
+  @IsOptional()
+  phone?: string;
 
   @IsString()
+  @IsOptional()
   pPhone?: string;
 
   @IsString()
@@ -23,7 +26,7 @@ export class CreateCombinedDto {
 
   @IsOptional()
   @IsArray()
-  @IsNumber({}, { each: true })
+  @IsInt({ each: true })
   @Type(()=>Number)
   courses?: number[];
 }
