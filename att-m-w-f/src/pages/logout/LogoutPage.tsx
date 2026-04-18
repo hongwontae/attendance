@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router";
 import { useAuthStore } from "../../store/auth-store";
-import { QueryClient } from "@tanstack/react-query";
+import {  useQueryClient } from "@tanstack/react-query";
 import { logoutApi } from "../../api/auth/logout-api";
 
 function LogoutPage() {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
 

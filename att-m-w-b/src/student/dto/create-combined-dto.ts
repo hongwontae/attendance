@@ -7,6 +7,7 @@ export class CreateCombinedDto {
 
   @IsInt()
   @IsOptional()
+  @Type(()=>Number)
   age?: number;
 
   @IsEmail()

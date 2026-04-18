@@ -14,10 +14,12 @@ import CustomIconButton from "../../components/custom/CustomIconButton";
 import { useDebounce } from "../../custom-hooks/useDebounce";
 import StudentSearch from "../../components/student-components/StudentSearch";
 import StudentOrder from "../../components/student-components/StudentOrder";
+import { useAuthStore } from "../../store/auth-store";
 
 function StudentPage() {
   const selectedStudent = studentStore((stu) => stu.selectedStudent);
   const mode = studentStore((stu) => stu.mode);
+  const user = useAuthStore((state) => state.user);
   const openCreate = studentStore((stu) => stu.openCreate);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -60,7 +62,7 @@ function StudentPage() {
   }
 
   const { data, isError, isLoading, isFetching } = useQuery({
-    queryKey: ["students", { page, name, phone, course, sort, order }],
+    queryKey: ["students", user?.id, { page, name, phone, course, sort, order }],
     queryFn: ({ signal }) =>
       getStudentAPi({ page, name, phone, course, sort, order }, signal),
     placeholderData: (prev) => prev,

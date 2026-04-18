@@ -56,6 +56,8 @@ export class StudentController {
   @UseGuards(AuthGuard('jwt'))
   @Get('/search')
   async searchStudents(@Query() query : SearchStudentDto, @CurrentAdmin() adminId : number){
+    console.log(adminId);
+    console.log('search controller');
     return await this.studentService.searchStudentsService(query, adminId)
   }
 
