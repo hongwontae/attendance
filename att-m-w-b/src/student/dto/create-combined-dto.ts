@@ -15,14 +15,16 @@ export class CreateCombinedDto {
   @IsInt()
   @IsOptional()
   @Type(() => Number)
-  age?: number;
+  age?: number | null;
 
   @IsEmail()
   @IsOptional()
-  email?: string;
+  email?: string | null;
 
   @IsOptional()
   @Transform(({ value }) => {
+    if (value == null) return value; // null + undefined
+
     if (typeof value !== 'string') return value;
 
     let phone = value.replace(/\D/g, '');
@@ -34,9 +36,11 @@ export class CreateCombinedDto {
     return phone;
   })
   @IsMobilePhone('ko-KR')
-  phone?: string;
+  phone?: string | null;
 
   @Transform(({ value }) => {
+    if (value == null) return value; // null + undefined
+
     if (typeof value !== 'string') return value;
 
     let phone = value.replace(/\D/g, '');
@@ -49,14 +53,14 @@ export class CreateCombinedDto {
   })
   @IsMobilePhone('ko-KR')
   @IsOptional()
-  pPhone?: string;
+  pPhone?: string | null;
 
   @IsString()
-  memo?: string;
+  memo?: string | null;
 
   @IsOptional()
   @IsArray()
   @IsInt({ each: true })
   @Type(() => Number)
-  courses?: number[];
+  courses?: number[] | null;
 }

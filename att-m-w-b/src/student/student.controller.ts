@@ -27,8 +27,9 @@ export class StudentController {
   constructor(private studentService: StudentService) {}
 
   @Post('save')
-  async createStudent(@Body() body: CreateStudentDto) {
-    const stu = await this.studentService.createStudent(body);
+  @UseGuards(AuthGuard('jwt'))
+  async createStudent(@Body() body: CreateStudentDto, @CurrentAdmin() adminId : number) {
+    const stu = await this.studentService.createStudent(body, adminId);
     return stu;
   }
 

@@ -9,6 +9,7 @@ import CustomCheckbox from "../custom/CustomCheckbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateStudentApi } from "../../api/student/post-student-update-api";
 import { studentStore } from "../../store/stu-store";
+import { ageRefine, emailRefine, nameRefine, phoneRefine } from "../../util-function/stu-func/stu-page-func";
 
 type Props = {
   stuInfo: CombinedType;
@@ -59,6 +60,7 @@ function StudentUpdateFormModal({ stuInfo }: Props) {
 
   function onSubmit(data: FormValues) {
     const courseIds = data.courses.map(id => Number(id))
+    console.log(data)
   mutation.mutate({
     ...data,
     courseIds : courseIds,
@@ -83,30 +85,35 @@ function StudentUpdateFormModal({ stuInfo }: Props) {
               labelName="이름"
               inputType="text"
               name="name"
+              onInput={(e)=>nameRefine(e)}
             ></CustomInput>
             <CustomInput
               register={register}
               labelName="나이"
-              inputType="number"
+              inputType="text"
               name="age"
+              onInput={(e)=>ageRefine(e)}
             ></CustomInput>
             <CustomInput
               register={register}
               inputType="email"
               labelName="이메일"
               name="email"
+              onInput={(e)=>emailRefine(e)}
             ></CustomInput>
             <CustomInput
               register={register}
               inputType="text"
               labelName="학생 전화번호"
               name="phone"
+              onInput={(e)=>phoneRefine(e)}
             ></CustomInput>
             <CustomInput
               register={register}
               inputType="text"
               labelName="부모님 전화번호"
               name="pPhone"
+              onInput={(e)=>phoneRefine(e)}
             ></CustomInput>
             <CustomCheckbox
               register={register}

@@ -3,60 +3,61 @@ import {
   IsEmail,
   IsInt,
   IsMobilePhone,
-  IsNumber,
   IsOptional,
   IsString,
-  Matches,
 } from 'class-validator';
 
 export class CreateStudentDto {
   @IsString()
   name: string;
 
-  @Type(() => Number)
-  @IsInt()
-  adminId: number;
-
+  @Transform(({ value }) => value === '' ? null : value)
   @Type(() => Number)
   @IsOptional()
   @IsInt()
-  age?: number;
+  age?: number | null;
 
   @IsOptional()
-  @Transform(({ value }) => {
-    if (typeof value !== 'string') return value;
+@Transform(({ value }) => {
+  if (value == null) return value;
 
-    let phone = value.replace(/\D/g, '');
+  if (typeof value !== 'string') return value;
 
-    if (phone.startsWith('82')) {
-      phone = '0' + phone.slice(2);
-    }
+  let phone = value.replace(/\D/g, '');
 
-    return phone;
-  })
+  if (phone.startsWith('82')) {
+    phone = '0' + phone.slice(2);
+  }
+
+  return phone;
+})
   @IsMobilePhone('ko-KR')
-  phone?: string;
+  phone?: string | null;
 
   @IsOptional()
-  @Transform(({ value }) => {
-    if (typeof value !== 'string') return value;
+ @Transform(({ value }) => {
+  if (value == null) return value;
 
-    let phone = value.replace(/\D/g, '');
+  if (typeof value !== 'string') return value;
 
-    if (phone.startsWith('82')) {
-      phone = '0' + phone.slice(2);
-    }
+  let phone = value.replace(/\D/g, '');
 
-    return phone;
-  })
+  if (phone.startsWith('82')) {
+    phone = '0' + phone.slice(2);
+  }
+
+  return phone;
+})
   @IsMobilePhone('ko-KR')
-  pPhone?: string;
+  pPhone?: string | null;
 
+  @Transform(({ value }) => value === '' ? null : value)
   @IsEmail()
   @IsOptional()
-  email?: string;
+  email?: string | null;
 
+  @Transform(({ value }) => value === '' ? null : value)
   @IsString()
   @IsOptional()
-  memo?: string;
+  memo?: string | null;
 }

@@ -27,9 +27,9 @@ export class StudentService {
   ) {}
 
   // CRUD TEST Service
-  async createStudent(studentInfo: CreateStudentDto) {
+  async createStudent(studentInfo: CreateStudentDto, adminId : number) {
     // fk를 가진 엔티티 자체를 만들어서 admin fk 키에 추가해야 제대로 fk가 생성됩니다.
-    const admin = await this.adminService.findAdminId(studentInfo.adminId);
+    const admin = await this.adminService.findAdminId(adminId);
 
     if (!admin) {
       throw new NotFoundException('Admin Not Found');
@@ -107,49 +107,60 @@ export class StudentService {
     stuInfo: UpdateStudentDto,
   ) {
     const student = await this.studentRepo.findOne({
-      where: { id: stuId, admin: { id: adminId } },
-      relations: ['enrollments', 'enrollments.course'],
-    });
+    where: { id: stuId, admin: { id: adminId } },
+    relations: ['enrollments', 'enrollments.course'],
+  });
 
-    if (!student) {
-      throw new NotFoundException();
+  if (!student) {
+    throw new NotFoundException();
+  }
+
+  // ✅ 핵심: undefined만 제외하고 업데이트
+  for (const key in stuInfo) {
+    const value = stuInfo[key];
+
+    if (value !== undefined && key !== 'courseIds') {
+      student[key] = value;
     }
+  }
 
-    Object.assign(student, stuInfo);
-    await this.studentRepo.save(student);
+  await this.studentRepo.save(student);
 
-    if (stuInfo.courseIds) {
-      const vaildCourses = await this.courseRepo.find({
-        where: {
-          id: In(stuInfo.courseIds.map(Number)),
-          admin: { id: adminId },
-        },
-      });
-
-      if (vaildCourses.length !== stuInfo.courseIds.length) {
-        throw new ForbiddenException('다른 관리자의 course가 포함되었습니다.');
-      }
-
-      await this.enrollRepo.delete({
-        student: { id: student.id },
+  // ✅ courseIds는 따로 처리
+  if (stuInfo.courseIds !== undefined) {
+    const validCourses = await this.courseRepo.find({
+      where: {
+        id: In(stuInfo.courseIds ?? []),
         admin: { id: adminId },
-      });
+      },
+    });
 
-      const enrollments = vaildCourses.map((course) => {
-        return this.enrollRepo.create({
-          student,
-          course,
-          admin: { id: adminId },
-        });
-      });
-
-      await this.enrollRepo.save(enrollments);
+    if (validCourses.length !== (stuInfo.courseIds ?? []).length) {
+      throw new ForbiddenException('다른 관리자의 course가 포함되었습니다.');
     }
 
-    return await this.studentRepo.findOne({
-      where: { id: stuId, admin: { id: adminId } },
-      relations: ['enrollments', 'enrollments.course'],
+    // 기존 삭제
+    await this.enrollRepo.delete({
+      student: { id: student.id },
+      admin: { id: adminId },
     });
+
+    // 새로 생성
+    const enrollments = validCourses.map((course) =>
+      this.enrollRepo.create({
+        student,
+        course,
+        admin: { id: adminId },
+      }),
+    );
+
+    await this.enrollRepo.save(enrollments);
+  }
+
+  return await this.studentRepo.findOne({
+    where: { id: stuId, admin: { id: adminId } },
+    relations: ['enrollments', 'enrollments.course'],
+  });
   }
 
   async deleteOneStudent(id: number, adminId: number) {
