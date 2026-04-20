@@ -1,5 +1,12 @@
-import { Type } from 'class-transformer';
-import { IsArray, IsEmail, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEmail,
+  IsInt,
+  IsMobilePhone,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateCombinedDto {
   @IsString()
@@ -7,18 +14,40 @@ export class CreateCombinedDto {
 
   @IsInt()
   @IsOptional()
-  @Type(()=>Number)
+  @Type(() => Number)
   age?: number;
 
   @IsEmail()
   @IsOptional()
   email?: string;
 
-  @IsString()
   @IsOptional()
+  @Transform(({ value }) => {
+    if (typeof value !== 'string') return value;
+
+    let phone = value.replace(/\D/g, '');
+
+    if (phone.startsWith('82')) {
+      phone = '0' + phone.slice(2);
+    }
+
+    return phone;
+  })
+  @IsMobilePhone('ko-KR')
   phone?: string;
 
-  @IsString()
+  @Transform(({ value }) => {
+    if (typeof value !== 'string') return value;
+
+    let phone = value.replace(/\D/g, '');
+
+    if (phone.startsWith('82')) {
+      phone = '0' + phone.slice(2);
+    }
+
+    return phone;
+  })
+  @IsMobilePhone('ko-KR')
   @IsOptional()
   pPhone?: string;
 
@@ -28,6 +57,6 @@ export class CreateCombinedDto {
   @IsOptional()
   @IsArray()
   @IsInt({ each: true })
-  @Type(()=>Number)
+  @Type(() => Number)
   courses?: number[];
 }

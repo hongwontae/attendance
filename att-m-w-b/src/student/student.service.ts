@@ -146,7 +146,7 @@ export class StudentService {
       await this.enrollRepo.save(enrollments);
     }
 
-    return this.studentRepo.findOne({
+    return await this.studentRepo.findOne({
       where: { id: stuId, admin: { id: adminId } },
       relations: ['enrollments', 'enrollments.course'],
     });

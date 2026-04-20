@@ -1,23 +1,23 @@
-### Create Student
-Post http://localhost:3000/student/save
+### Create Combined Student
+Post http://localhost:3000/student/combined/create
 Content-Type: application/json
 
 {
-    "adminId" : "1",
     "name" : "k31",
     "age" : "17",
     "phone" : "010-2222-2222",
     "pPhone" : "010-3333-3333",
     "email" : "dnjsxoghd@naver.com",
-    "memo" : "Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World "
+    "memo" : "Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World Hello-World ",
+    "courses" : ["1", "2"]
 }
 
 ### Update Student
-PATCH http://localhost:3000/student/update/1
+POST http://localhost:3000/student/update/1
 Content-Type: application/json
 
 {
-    "age" : "18",
+    "age" : "302",
     "phone" : "010-4444-3121",
     "pPhone" : "010-3333-3241"
 }

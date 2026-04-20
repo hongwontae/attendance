@@ -1,5 +1,24 @@
-import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsEnum,
+  IsIn,
+  IsInt,
+  IsMobilePhone,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
+
+enum SortField {
+  NAME = 'name',
+  AGE = 'age',
+  CREATED_AT = 'createdAt',
+}
+
+enum OrderField {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
 
 export class SearchStudentDto {
   @IsOptional()
@@ -18,7 +37,18 @@ export class SearchStudentDto {
   name?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) => {
+    if (typeof value !== 'string') return value;
+
+    let phone = value.replace(/\D/g, '');
+
+    if (phone.startsWith('82')) {
+      phone = '0' + phone.slice(2);
+    }
+
+    return phone;
+  })
+  @IsMobilePhone('ko-KR')
   phone?: string;
 
   @IsOptional()
@@ -27,11 +57,11 @@ export class SearchStudentDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(['name', 'age', 'createdAt'])
-  sort?: string;
+  @IsEnum(SortField)
+  sort?: string = SortField.CREATED_AT;
 
   @IsOptional()
   @IsString()
-  @IsIn(["ASC", "DESC"])
-  order?: 'ASC' | 'DESC';
+  @IsEnum(OrderField)
+  order?: OrderField = OrderField.ASC;
 }
