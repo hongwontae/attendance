@@ -8,6 +8,12 @@ import { useEscClose } from "../../custom-hooks/useEscClose";
 import CustomCheckbox from "../custom/CustomCheckbox";
 import CustomTextarea from "../custom/CustomTextarea";
 import { postCreateStudentApi } from "../../api/student/post-student-create-api";
+import {
+  ageRefine,
+  emailRefine,
+  nameRefine,
+  phoneRefine,
+} from "../../util-function/stu-func/stu-page-func";
 
 export type FormTypes = {
   name: string;
@@ -58,30 +64,35 @@ function StudentCreateFormModal() {
               inputType="text"
               labelName="이름"
               name="name"
+              onInput={(e) => nameRefine(e)}
             ></CustomInput>
             <CustomInput
               register={register}
-              inputType="number"
+              inputType="text"
               labelName="나이"
               name="age"
+              onInput={(e)=>ageRefine(e)}
             ></CustomInput>
             <CustomInput
               register={register}
               inputType="email"
               labelName="이메일"
               name="email"
+              onInput={(e)=>emailRefine(e)}
             ></CustomInput>
             <CustomInput
               register={register}
               inputType="text"
               labelName="학생 전화번호"
               name="phone"
+              onInput={(e) => phoneRefine(e)}
             ></CustomInput>
             <CustomInput
               register={register}
               inputType="text"
               labelName="부모님 전화번호"
               name="pPhone"
+              onInput={(e) => phoneRefine(e)}
             ></CustomInput>
             <CustomCheckbox
               register={register}
