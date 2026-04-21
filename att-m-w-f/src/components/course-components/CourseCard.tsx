@@ -1,0 +1,27 @@
+import { motion } from "framer-motion";
+import type { GetCoursesType } from "../../api/course/get-courses-api";
+
+type Props = {
+  data: GetCoursesType;
+};
+
+function CourseCard({ data }: Props) {
+    console.log(data);
+  return (
+    <>
+      <motion.div
+        whileHover={{ scale: 1.03 }}
+        className="bg-white rounded-2xl shadow-md p-5 cursor-pointer"
+      >
+        <h2 className="text-lg font-bold">{data.name}</h2>
+        <p className="text-gray-500 mt-2">{data.description}</p>
+
+        <div className="mt-4 text-sm text-gray-400">
+          학생 수: {data.enrollments.length ?? 0}
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
+export default CourseCard;

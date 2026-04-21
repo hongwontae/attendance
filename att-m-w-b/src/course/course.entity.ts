@@ -1,5 +1,4 @@
 import { AdminEntity } from 'src/admin/admin.entity';
-import { AttendanceEntity } from 'src/attendance/attendance.entity';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
 import {
   Column,
