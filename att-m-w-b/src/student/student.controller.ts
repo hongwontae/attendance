@@ -76,6 +76,7 @@ export class StudentController {
     @Body() body: CreateCombinedDto,
     @CurrentAdmin() adminId: number,
   ) {
+    console.log(body);
     const student = await this.studentService.createCombinedStudentService(
       body,
       adminId,
@@ -92,6 +93,7 @@ export class StudentController {
     @Body() body: UpdateStudentDto,
     @CurrentAdmin() adminId: number,
   ) {
+
     const upStu = await this.studentService.updateStudentAndCourse(id, adminId, body);
     return plainToInstance(UpdateStudentResponseDto, upStu, {
       excludeExtraneousValues : true

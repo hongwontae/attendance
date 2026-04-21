@@ -7,23 +7,31 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { EmptyToNull } from 'src/decorator/empty-to-null';
 
 export class CreateCombinedDto {
+
   @IsString()
   name: string;
 
+  @Transform(({value})=>{
+    if(value === '') return null;
+    if(value == null) return null;
+    return Number(null);
+  })
   @IsInt()
   @IsOptional()
-  @Type(() => Number)
   age?: number | null;
 
   @IsEmail()
   @IsOptional()
+  @EmptyToNull()
   email?: string | null;
 
   @IsOptional()
   @Transform(({ value }) => {
-    if (value == null) return value; // null + undefined
+    if (value == null) return value; 
+    if(value === '') return null;
 
     if (typeof value !== 'string') return value;
 
@@ -39,9 +47,8 @@ export class CreateCombinedDto {
   phone?: string | null;
 
   @Transform(({ value }) => {
-    if (value == null) return value; // null + undefined
-
-    if (typeof value !== 'string') return value;
+    if (value == null) return value;
+    if(value == '') return null;
 
     let phone = value.replace(/\D/g, '');
 
@@ -56,6 +63,8 @@ export class CreateCombinedDto {
   pPhone?: string | null;
 
   @IsString()
+  @IsOptional()
+  @EmptyToNull()
   memo?: string | null;
 
   @IsOptional()

@@ -6,57 +6,59 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { EmptyToNull } from 'src/decorator/empty-to-null';
 
 export class CreateStudentDto {
   @IsString()
   name: string;
 
-  @Transform(({ value }) => value === '' ? null : value)
-  @Type(() => Number)
+  @Transform(({value})=>{
+    if(value == null) return value;
+    if(value == '') return null;
+    return Number(value);
+  })
   @IsOptional()
   @IsInt()
   age?: number | null;
 
   @IsOptional()
-@Transform(({ value }) => {
-  if (value == null) return value;
+  @Transform(({ value }) => {
+    if (value == null) return value;
+    if (value == '') return null;
 
-  if (typeof value !== 'string') return value;
+    let phone = value.replace(/\D/g, '');
 
-  let phone = value.replace(/\D/g, '');
+    if (phone.startsWith('82')) {
+      phone = '0' + phone.slice(2);
+    }
 
-  if (phone.startsWith('82')) {
-    phone = '0' + phone.slice(2);
-  }
-
-  return phone;
-})
+    return phone;
+  })
   @IsMobilePhone('ko-KR')
   phone?: string | null;
 
   @IsOptional()
- @Transform(({ value }) => {
-  if (value == null) return value;
+  @Transform(({ value }) => {
+    if (value == null) return value;
+    if (value == '') return null;
 
-  if (typeof value !== 'string') return value;
+    let phone = value.replace(/\D/g, '');
 
-  let phone = value.replace(/\D/g, '');
+    if (phone.startsWith('82')) {
+      phone = '0' + phone.slice(2);
+    }
 
-  if (phone.startsWith('82')) {
-    phone = '0' + phone.slice(2);
-  }
-
-  return phone;
-})
+    return phone;
+  })
   @IsMobilePhone('ko-KR')
   pPhone?: string | null;
 
-  @Transform(({ value }) => value === '' ? null : value)
+  @EmptyToNull()
   @IsEmail()
   @IsOptional()
   email?: string | null;
 
-  @Transform(({ value }) => value === '' ? null : value)
+  @EmptyToNull()
   @IsString()
   @IsOptional()
   memo?: string | null;

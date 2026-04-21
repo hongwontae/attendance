@@ -9,5 +9,5 @@ export class UpdateStudentDto extends PartialType(CreateStudentDto) {
     @IsInt({each : true})
     @Type(()=>Number)
     @IsArray()
-    courseIds? : number[]
+    courseIds? : number[] | null;
 };

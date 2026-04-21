@@ -106,6 +106,9 @@ export class StudentService {
     adminId: number,
     stuInfo: UpdateStudentDto,
   ) {
+
+    
+
     const student = await this.studentRepo.findOne({
     where: { id: stuId, admin: { id: adminId } },
     relations: ['enrollments', 'enrollments.course'],
@@ -123,6 +126,8 @@ export class StudentService {
       student[key] = value;
     }
   }
+
+  console.log(student);
 
   await this.studentRepo.save(student);
 
@@ -287,6 +292,10 @@ async searchStudentsService(dto: SearchStudentDto, adminId: number) {
   stuInfo: CreateCombinedDto,
   adminId: number,
 ) {
+
+  console.log(stuInfo.age);
+  console.log('asdaslkdsaldl;asdl;');
+
   // 1️⃣ 학생 생성
   const student = await this.studentRepo.save({
     name: stuInfo.name,

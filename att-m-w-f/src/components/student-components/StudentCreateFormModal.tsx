@@ -17,7 +17,7 @@ import {
 
 export type FormTypes = {
   name: string;
-  age: number;
+  age: string;
   email?: string;
   phone: string;
   pPhone?: string;
