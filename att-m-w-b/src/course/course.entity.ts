@@ -1,9 +1,11 @@
 import { AdminEntity } from 'src/admin/admin.entity';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
+import { InstructorEntity } from 'src/instructor/instructor.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -18,14 +20,14 @@ export class CourseEntity {
   @Column()
   name: string;
 
-  @Column({ type : 'text',nullable: true })
+  @Column({ type: 'text', nullable: true })
   description?: string | null;
 
   @Column({ type: 'date', nullable: true })
-  startDate?: string | null;
+  startDate?: Date | null;
 
   @Column({ type: 'date', nullable: true })
-  endDate?: string | null;
+  endDate?: Date | null;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -35,12 +37,18 @@ export class CourseEntity {
 
   // 🔥 admin과 연결
   @ManyToOne(() => AdminEntity, (admin) => admin.courses, {
-    onDelete: 'CASCADE',  
+    onDelete: 'CASCADE',
   })
+  @JoinColumn({name : 'adminId'})
   admin: AdminEntity;
 
   @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment.course)
   enrollments: EnrollmentEntity[];
 
-
+  @ManyToOne(() => InstructorEntity, (instructor) => instructor.courses, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'instructorId' })
+  instructor: InstructorEntity;
 }

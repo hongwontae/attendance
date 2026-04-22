@@ -63,6 +63,7 @@ export class StudentController {
     @Query() query: SearchStudentDto,
     @CurrentAdmin() adminId: number,
   ) {
+    console.log(query);
     const result = await this.studentService.searchStudentsService(
       query,
       adminId,

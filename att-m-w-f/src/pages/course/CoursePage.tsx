@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCoursesApi } from "../../api/course/get-courses-api";
 import { useAuthStore } from "../../store/auth-store";
-import CourseCardLayout from "../../components/course-components/CouRSECardLayout";
+import CourseCardLayout from "../../components/course-components/CourseCardLayout";
 
 function CoursePage() {
   const user = useAuthStore((state) => state.user);

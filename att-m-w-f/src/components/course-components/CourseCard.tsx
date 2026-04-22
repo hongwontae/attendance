@@ -11,12 +11,12 @@ function CourseCard({ data }: Props) {
     <>
       <motion.div
         whileHover={{ scale: 1.03 }}
-        className="bg-white rounded-2xl shadow-md p-5 cursor-pointer"
+        className="bg-white rounded-2xl shadow-md p-5 cursor-pointer text-black font-pretendard text-center"
       >
         <h2 className="text-lg font-bold">{data.name}</h2>
-        <p className="text-gray-500 mt-2">{data.description}</p>
+        <p className="mt-2">{data.description}</p>
 
-        <div className="mt-4 text-sm text-gray-400">
+        <div className="mt-4 text-sm">
           학생 수: {data.enrollments.length ?? 0}
         </div>
       </motion.div>

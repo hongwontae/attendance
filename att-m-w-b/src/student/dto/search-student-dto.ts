@@ -48,7 +48,6 @@ export class SearchStudentDto {
 
     return phone;
   })
-  @IsMobilePhone('ko-KR')
   phone?: string;
 
   @IsOptional()

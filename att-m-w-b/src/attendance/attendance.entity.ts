@@ -27,7 +27,7 @@ export class AttendanceEntity {
   date: string;
 
   @Column({
-    type: 'simple-enum',
+    type: 'enum',
     enum: AttendanceStatus,
   })
   status: AttendanceStatus;

@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from "typeorm";
 
 @Entity('student')
@@ -18,7 +19,7 @@ export class StudentEntity {
   @Column()
   name: string;
 
-  @Column({type : 'integer',nullable : true})
+  @Column({type : 'int',nullable : true})
   age? : number | null;
 
   @Column({type : 'text', nullable: true })
@@ -33,6 +34,7 @@ export class StudentEntity {
   @Column({ type: "text", nullable: true })
   memo?: string | null;
 
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -44,6 +46,7 @@ export class StudentEntity {
     onDelete: 'CASCADE',
     nullable : false
   })
+  @JoinColumn({name : 'adminId'})
   admin: AdminEntity;
 
   @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment.student)

@@ -1,6 +1,7 @@
 import { AttendanceEntity } from 'src/attendance/attendance.entity';
 import { CourseEntity } from 'src/course/course.entity';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
+import { InstructorEntity } from 'src/instructor/instructor.entity';
 import { StudentEntity } from 'src/student/student.entity';
 import {
   Column,
@@ -31,7 +32,7 @@ export class AdminEntity {
   // 관계 설정
   @OneToMany(() => CourseEntity, (course) => course.admin)
   courses: CourseEntity[];
-  
+
   @OneToMany(() => EnrollmentEntity, (enrollment) => enrollment.admin)
   enrollments: EnrollmentEntity[];
 
@@ -40,4 +41,7 @@ export class AdminEntity {
 
   @OneToMany(() => AttendanceEntity, (attendance) => attendance.admin)
   attendances: AttendanceEntity[];
+
+  @OneToMany(() => InstructorEntity, (instructor) => instructor.admin)
+  instructors: InstructorEntity[];
 }
