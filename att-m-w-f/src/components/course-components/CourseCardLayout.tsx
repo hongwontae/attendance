@@ -9,7 +9,7 @@ type Props = {
 function CourseCardLayout({ data }: Props) {
   return (
     <>
-      <section className="p-6">
+      <section className="p-10">
         <div className="grid grid-cols-3 gap-6">
           {data.map((ele, idx) => {
             return (

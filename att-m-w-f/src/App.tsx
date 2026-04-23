@@ -8,6 +8,7 @@ import ProtectRouter from "./components/utils/ProtectRouter";
 import StudentPage from "./pages/student/StudentPage";
 import Test2Page from "./pages/test/Test2Page";
 import CoursePage from "./pages/course/CoursePage";
+import CourseDetailPage from "./pages/course/CourseDetailPage";
 
 function App() {
   const queryClient = new QueryClient();
@@ -27,27 +28,37 @@ function App() {
           ),
         },
         {
-          path : '/test2',
-          element : (
+          path: "/test2",
+          element: (
             <ProtectRouter>
               <Test2Page></Test2Page>
             </ProtectRouter>
-          )
+          ),
         },
         {
-          path : '/student',
-          element : <ProtectRouter>
-            <StudentPage></StudentPage>
-          </ProtectRouter>
+          path: "/student",
+          element: (
+            <ProtectRouter>
+              <StudentPage></StudentPage>
+            </ProtectRouter>
+          ),
         },
         {
-          path : '/courses',
-          element : <ProtectRouter>
-            <CoursePage></CoursePage>
-          </ProtectRouter>
-        }
-
-
+          path: "/courses",
+          element: (
+            <ProtectRouter>
+              <CoursePage></CoursePage>
+            </ProtectRouter>
+          ),
+        },
+        {
+          path: "/course/detail/:id",
+          element: (
+            <ProtectRouter>
+              <CourseDetailPage></CourseDetailPage>
+            </ProtectRouter>
+          ),
+        },
       ],
     },
   ]);
