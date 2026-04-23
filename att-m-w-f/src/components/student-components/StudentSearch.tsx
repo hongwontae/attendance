@@ -57,7 +57,7 @@ function StudentSearch({
         <option className="text-black" value="">과목</option>
         <option className="text-black" value="React">JavaScript & React</option>
         <option className="text-black" value="Spring">Java & Spring</option>
-        <option className="text-black" value="Excercise">Excercise</option>
+        <option className="text-black" value="Python">Python</option>
       </select>
     </div>
   );

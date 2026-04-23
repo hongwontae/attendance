@@ -42,6 +42,7 @@ function StudentCreateFormModal() {
   useEscClose(closeModal, mode === "create");
 
   function onSubmit(data: FormTypes) {
+    console.log(data);
     const courses = data.courses.map((id) => Number(id));
     mutation.mutate({
       ...data,

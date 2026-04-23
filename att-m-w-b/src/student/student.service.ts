@@ -183,8 +183,6 @@ export class StudentService {
 
 async searchStudentsService(dto: SearchStudentDto, adminId: number) {
 
-  console.log(dto.phone);
-  console.log('test...')
 
   const {
     name,
