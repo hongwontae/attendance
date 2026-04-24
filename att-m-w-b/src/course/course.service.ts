@@ -53,16 +53,35 @@ export class CourseService {
   }
 
   async findAllCourse(adminId: number) {
-    const allCourse = await this.courseRepo.find({
-      where: { admin: { id: adminId } },
-      relations: ['enrollments', 'enrollments.student'],
-    });
+    const data =  await this.courseRepo
+      .createQueryBuilder('c')
+      .leftJoin('c.enrollments', 'e')
+      .where('c.adminId = :adminId', { adminId })
+      .select([
+        'c.id',
+        'c.name',
+        'c.instructor',
+        'c.description',
+        'c.startDate',
+        'c.endDate',
+      ])
+      .addSelect('COUNT(e.id)', 'enrollmentsLength')
+      .groupBy('c.id')
+      .getRawMany();
 
-    if (!allCourse) {
-      throw new NotFoundException('추가된 수업이 없습니다.');
-    }
+      console.log(data);
 
-    return allCourse;
+      return data.map((item)=>{
+        return {
+          id : item.c_id,
+          name : item.c_name,
+          instructor : item.c_instructor,
+          description : item.c_description,
+          startDate : item.c_startDate,
+          endDate : item.c_endDate,
+          enrollmentsLength : Number(item.enrollmentsLength)
+        }
+      })
   }
 
   async findOneCourse(id: number, adminId: number) {

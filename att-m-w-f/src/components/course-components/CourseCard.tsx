@@ -24,7 +24,7 @@ function CourseCard({ data }: Props) {
         <p className="mt-2">{data.description}</p>
 
         <div className="mt-4 text-sm">
-          학생 수: {data.enrollments.length ?? 0}
+          학생 수: {data.enrollmentsLength ?? 0}
         </div>
       </motion.div>
     </>

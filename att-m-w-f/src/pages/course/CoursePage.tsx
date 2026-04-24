@@ -10,6 +10,7 @@ function CoursePage() {
     queryFn: getCoursesApi,
     queryKey: ["courses", user?.id],
   });
+  console.log(data);
 
   if (isLoading) {
     return <div>Loading...</div>;

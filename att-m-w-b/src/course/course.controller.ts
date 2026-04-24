@@ -14,6 +14,8 @@ import { CourseService } from './course.service';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentAdmin } from 'src/decorator/current-admin';
+import { plainToInstance } from 'class-transformer';
+import { ResponseShowCourseDto } from './dto/res-dto/response-show-course-dto';
 
 @Controller('course')
 export class CourseController {
@@ -35,7 +37,9 @@ export class CourseController {
   @Get('all')
   @UseGuards(AuthGuard('jwt'))
   async findAllCourse(@CurrentAdmin() adminId: number) {
-    return await this.courseService.findAllCourse(adminId);
+    const result =  await this.courseService.findAllCourse(adminId);
+    console.log(result);
+    return plainToInstance(ResponseShowCourseDto, result);
   }
 
   @Get('one/:id')
@@ -53,14 +57,14 @@ export class CourseController {
     return await this.courseService.deleteCourse(id, 2);
   }
 
-  // 실제 브라우저와 연동하는 Service
+  // 실제 브라우저와 연동하는 Controller
   @Get('detail/all/:id')
   @UseGuards(AuthGuard('jwt'))
   async findCourseAndStuAndAtt(
     @Param('id', ParseIntPipe) id: number,
     @CurrentAdmin() adminId: number,
   ) {
-    const result = await this.courseService.findCourAndStuAndAtt(adminId, id);
-    return result;
+   return await this.courseService.findCourAndStuAndAtt(adminId, id);
+
   }
 }
