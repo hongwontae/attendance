@@ -2,8 +2,8 @@
 export type GetCoursesType = {
   id: number;
   name: string;
-  instructor : string;
-  description: string;
+  instructor? : string | null;
+  description?: string | null;
   startDate: string;
   endDate: string;
   enrollmentsLength : number;

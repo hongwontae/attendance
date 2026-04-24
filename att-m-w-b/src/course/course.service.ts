@@ -56,6 +56,7 @@ export class CourseService {
     const data =  await this.courseRepo
       .createQueryBuilder('c')
       .leftJoin('c.enrollments', 'e')
+      .leftJoin('c.instructor', 'i')
       .where('c.adminId = :adminId', { adminId })
       .select([
         'c.id',
@@ -64,6 +65,7 @@ export class CourseService {
         'c.description',
         'c.startDate',
         'c.endDate',
+        'i.name'
       ])
       .addSelect('COUNT(e.id)', 'enrollmentsLength')
       .groupBy('c.id')
@@ -75,7 +77,7 @@ export class CourseService {
         return {
           id : item.c_id,
           name : item.c_name,
-          instructor : item.c_instructor,
+          instructor : item.i_name,
           description : item.c_description,
           startDate : item.c_startDate,
           endDate : item.c_endDate,

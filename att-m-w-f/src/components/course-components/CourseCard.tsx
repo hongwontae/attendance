@@ -20,11 +20,18 @@ function CourseCard({ data }: Props) {
         whileHover={{ scale: 1.03 }}
         className="bg-white rounded-2xl shadow-md p-5 cursor-pointer text-black font-pretendard text-center"
       >
-        <h2 className="text-lg font-bold">{data.name}</h2>
-        <p className="mt-2">{data.description}</p>
+        <h2 className="text-lg font-bold mb-3">
+          {data.name} (강사 - {data.instructor ?? '강사 미정'})
+        </h2>
+        <div className="flex flex-col font-medium">
+          <p>
+            {data.startDate} ~ {data.endDate}
+          </p>
+          {data.description && <p className="mt-2">{data.description}</p>}
 
-        <div className="mt-4 text-sm">
-          학생 수: {data.enrollmentsLength ?? 0}
+          <div className="mt-4 text-sm">
+            학생 수: {data.enrollmentsLength ?? 0}
+          </div>
         </div>
       </motion.div>
     </>
