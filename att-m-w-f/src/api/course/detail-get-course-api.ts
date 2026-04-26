@@ -7,7 +7,7 @@ type InstructorType = {
   updatedAt : string;
 };
 
-type DetailCourseType = {
+export type DetailCourseType = {
   id: number;
   name: string;
   instructor: InstructorType | null;
@@ -17,6 +17,7 @@ type DetailCourseType = {
   createdAt : string;
   updatedAt : string;
 };
+
 
 export const getDetailCourseApi = async (
   courseId: number,

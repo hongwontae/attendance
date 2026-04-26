@@ -161,10 +161,6 @@ const course = await this.courseRepo
       .andWhere('student.adminId = :adminId', { adminId })
       .getMany();
 
-    if (students.length === 0) {
-      throw new NotFoundException('수업에 등록된 학생을 찾을 수 없습니다.');
-    }
-
     return students;
   }
 }
