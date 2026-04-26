@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentAdmin } from 'src/decorator/current-admin';
 import { plainToInstance } from 'class-transformer';
 import { ResponseShowCourseDto } from './dto/res-dto/response-show-course-dto';
+import { ResponseOneCourseDto } from './dto/res-dto/response-one-course-dto';
 
 @Controller('course')
 export class CourseController {
@@ -76,7 +77,18 @@ export class CourseController {
     @Param('id', ParseIntPipe) courseId : number,
     @CurrentAdmin() adminId : number
   ){
-    return await this.courseService.findOneCourseAndStu(courseId, adminId)
+    const course =  await this.courseService.findOneCourse(courseId, adminId);
+    return plainToInstance(ResponseOneCourseDto, course)
+    
+  }
+
+  @Get('detail/one/stu/:id')
+  @UseGuards(AuthGuard('jwt'))
+  async findOneIncludedStudent (
+    @Param('id', ParseIntPipe) courseId : number,
+    @CurrentAdmin() adminId : number
+  ){
+    return await this.courseService.findOneCourIncludeStudent(adminId, courseId)
   }
 
 

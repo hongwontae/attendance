@@ -1,11 +1,11 @@
 export type StudentType = {
     id : number;
     name : string;
-    age : number;
-    phone : string;
-    pPhone : string;
-    email : string;
-    memo : string;
+    age : number | null;
+    phone : string | null;
+    pPhone : string | null;
+    email : string | null;
+    memo : string | null;
     createdAt : string;
     updatedAt : string;
 }

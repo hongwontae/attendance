@@ -7,15 +7,15 @@ export class CreateCourseDto {
 
     @IsString()
     @IsOptional()
-    description? : string;
+    description? : string | null;
 
     @IsDateString()
     @IsOptional()
-    startDate? : string;
+    startDate? : string | null;
 
     @IsDateString()
     @IsOptional()
-    endDate? : string;
+    endDate? : string | null;
 
 
 }

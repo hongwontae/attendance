@@ -1,9 +1,11 @@
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 
 function CourseDetailPage(){
 
     const {id} = useParams();
-    console.log(id);
+    
+    useQuery
 
     return(
         <>

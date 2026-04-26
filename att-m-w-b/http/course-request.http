@@ -1,6 +1,9 @@
 ### Test Course + Student + ATT
 GET http://localhost:3000/course/detail/all/1
 
-### Test Particular Course + Include Student
+### Test Particular Course 
 GET http://localhost:3000/course/detail/one/1
+
+### Test Included Course Student
+GET http://localhost:3000/course/detail/one/stu/1
 

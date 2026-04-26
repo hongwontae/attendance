@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseEntity } from './course.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { AdminService } from 'src/admin/admin.service';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
+import { StudentEntity } from 'src/student/student.entity';
 
 @Injectable()
 export class CourseService {
@@ -15,6 +16,8 @@ export class CourseService {
     private readonly adminService: AdminService,
     @InjectRepository(EnrollmentEntity)
     private readonly enrollRepo: Repository<EnrollmentEntity>,
+    @InjectRepository(StudentEntity)
+    private readonly stuRepo: Repository<StudentEntity>,
   ) {}
 
   async createCourse(courseInfo: CreateCourseDto, adminId: number) {
@@ -50,19 +53,6 @@ export class CourseService {
     }
 
     return await this.courseRepo.findOneBy(whenCondition);
-  }
-
-  async findOneCourse(id: number, adminId: number) {
-    const oneCourse = await this.courseRepo.findOneBy({
-      id,
-      admin: { id: adminId },
-    });
-
-    if (!oneCourse) {
-      throw new NotFoundException('찾고자 하는 수업이 등록되지 않았습니다.');
-    }
-
-    return oneCourse;
   }
 
   async deleteCourse(id: number, adminId: number) {
@@ -130,8 +120,6 @@ export class CourseService {
       .groupBy('c.id')
       .getRawMany();
 
-    console.log(data);
-
     return data.map((item) => {
       return {
         id: item.c_id,
@@ -145,20 +133,38 @@ export class CourseService {
     });
   }
 
-  async findOneCourseAndStu(courseId: number, adminId: number) {
-    const findCourse = await this.courseRepo.findOneBy({
-      id: courseId,
-      admin: { id: adminId },
-    });
+  async findOneCourse(courseId: number, adminId: number) {
+const course = await this.courseRepo
+  .createQueryBuilder('course')
+  .leftJoin('course.enrollments', 'enrollment')
+  .leftJoinAndSelect('course.instructor', 'instructor')
+  .leftJoin('enrollment.student', 'student')
+  .where('course.id = :courseId', { courseId })
+  .andWhere('course.adminId = :adminId', { adminId })
+  .getOne();
 
-    const findStudent = await this.enrollRepo.find({
-      where: { admin: { id: adminId }, course: { id: courseId } },
-      relations : ['student']
-    });
+  console.log(course);
 
-    return {
-      course : findCourse,
-      students : findStudent,
+    if (!course) {
+      throw new NotFoundException('수업이 등록되지 않았습니다.');
     }
+
+    return course;
+  }
+
+  async findOneCourIncludeStudent(adminId: number, courseId: number) {
+    const students = await this.stuRepo
+      .createQueryBuilder('student')
+      .innerJoin('student.enrollments', 'enrollment')
+      .where('enrollment.courseId = :courseId', { courseId })
+      .andWhere('enrollment.adminId = :adminId', { adminId })
+      .andWhere('student.adminId = :adminId', { adminId })
+      .getMany();
+
+    if (students.length === 0) {
+      throw new NotFoundException('수업에 등록된 학생을 찾을 수 없습니다.');
+    }
+
+    return students;
   }
 }
