@@ -34,13 +34,6 @@ export class CourseController {
     return await this.courseService.updateCourse(body, id, 1);
   }
 
-  @Get('all')
-  @UseGuards(AuthGuard('jwt'))
-  async findAllCourse(@CurrentAdmin() adminId: number) {
-    const result =  await this.courseService.findAllCourse(adminId);
-    console.log(result);
-    return plainToInstance(ResponseShowCourseDto, result);
-  }
 
   @Get('one/:id')
   async findOneCourse(@Param('id', ParseIntPipe) id: number) {
@@ -57,7 +50,6 @@ export class CourseController {
     return await this.courseService.deleteCourse(id, 2);
   }
 
-  // 실제 브라우저와 연동하는 Controller
   @Get('detail/all/:id')
   @UseGuards(AuthGuard('jwt'))
   async findCourseAndStuAndAtt(
@@ -65,6 +57,27 @@ export class CourseController {
     @CurrentAdmin() adminId: number,
   ) {
    return await this.courseService.findCourAndStuAndAtt(adminId, id);
-
   }
+
+
+
+  // 실제 브라우저와 연동하는 Controller
+  @Get('all')
+  @UseGuards(AuthGuard('jwt'))
+  async findAllCourse(@CurrentAdmin() adminId: number) {
+    const result =  await this.courseService.findAllCourse(adminId);
+    console.log(result);
+    return plainToInstance(ResponseShowCourseDto, result);
+  }
+
+  @Get('detail/one/:id')
+  @UseGuards(AuthGuard('jwt'))
+  async findOneCourseAndStudent(
+    @Param('id', ParseIntPipe) courseId : number,
+    @CurrentAdmin() adminId : number
+  ){
+    return await this.courseService.findOneCourseAndStu(courseId, adminId)
+  }
+
+
 }

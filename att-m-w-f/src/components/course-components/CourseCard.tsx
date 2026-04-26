@@ -25,7 +25,7 @@ function CourseCard({ data }: Props) {
         </h2>
         <div className="flex flex-col font-medium">
           <p>
-            {data.startDate} ~ {data.endDate}
+            {data.startDate ?? "시작일 미정"} ~ {data.endDate ?? "종료일 미정"}
           </p>
           {data.description && <p className="mt-2">{data.description}</p>}
 

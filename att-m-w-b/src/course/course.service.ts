@@ -52,40 +52,6 @@ export class CourseService {
     return await this.courseRepo.findOneBy(whenCondition);
   }
 
-  async findAllCourse(adminId: number) {
-    const data =  await this.courseRepo
-      .createQueryBuilder('c')
-      .leftJoin('c.enrollments', 'e')
-      .leftJoin('c.instructor', 'i')
-      .where('c.adminId = :adminId', { adminId })
-      .select([
-        'c.id',
-        'c.name',
-        'c.instructor',
-        'c.description',
-        'c.startDate',
-        'c.endDate',
-        'i.name'
-      ])
-      .addSelect('COUNT(e.id)', 'enrollmentsLength')
-      .groupBy('c.id')
-      .getRawMany();
-
-      console.log(data);
-
-      return data.map((item)=>{
-        return {
-          id : item.c_id,
-          name : item.c_name,
-          instructor : item.i_name,
-          description : item.c_description,
-          startDate : item.c_startDate,
-          endDate : item.c_endDate,
-          enrollmentsLength : Number(item.enrollmentsLength)
-        }
-      })
-  }
-
   async findOneCourse(id: number, adminId: number) {
     const oneCourse = await this.courseRepo.findOneBy({
       id,
@@ -123,9 +89,6 @@ export class CourseService {
     });
   }
 
-  // 실제 브라우저와 연계되는 Service
-
-  // queryBuilder 사용 필수
   async findCourAndStuAndAtt(adminId: number, courseId: number) {
     return await this.enrollRepo
       .createQueryBuilder('enrollment')
@@ -144,5 +107,58 @@ export class CourseService {
       .addGroupBy('student.name')
 
       .getRawMany();
+  }
+
+  // 실제 브라우저와 연계되는 Service
+
+  async findAllCourse(adminId: number) {
+    const data = await this.courseRepo
+      .createQueryBuilder('c')
+      .leftJoin('c.enrollments', 'e')
+      .leftJoin('c.instructor', 'i')
+      .where('c.adminId = :adminId', { adminId })
+      .select([
+        'c.id',
+        'c.name',
+        'c.instructor',
+        'c.description',
+        'c.startDate',
+        'c.endDate',
+        'i.name',
+      ])
+      .addSelect('COUNT(e.id)', 'enrollmentsLength')
+      .groupBy('c.id')
+      .getRawMany();
+
+    console.log(data);
+
+    return data.map((item) => {
+      return {
+        id: item.c_id,
+        name: item.c_name,
+        instructor: item.i_name,
+        description: item.c_description,
+        startDate: item.c_startDate,
+        endDate: item.c_endDate,
+        enrollmentsLength: Number(item.enrollmentsLength),
+      };
+    });
+  }
+
+  async findOneCourseAndStu(courseId: number, adminId: number) {
+    const findCourse = await this.courseRepo.findOneBy({
+      id: courseId,
+      admin: { id: adminId },
+    });
+
+    const findStudent = await this.enrollRepo.find({
+      where: { admin: { id: adminId }, course: { id: courseId } },
+      relations : ['student']
+    });
+
+    return {
+      course : findCourse,
+      students : findStudent,
+    }
   }
 }

@@ -7,9 +7,14 @@ function CoursePage() {
   const user = useAuthStore((state) => state.user);
 
   const { data, isLoading, isError } = useQuery({
-    queryFn: getCoursesApi,
+    queryFn: ()=> getCoursesApi(),
     queryKey: ["courses", user?.id],
+    staleTime : 1000 * 60 * 5,
+    refetchOnWindowFocus : false,
+    placeholderData : (prev) => prev
+
   });
+
   console.log(data);
 
   if (isLoading) {
@@ -22,7 +27,6 @@ function CoursePage() {
     return null;
   }
 
-  console.log(data);
 
   return (
     <>
