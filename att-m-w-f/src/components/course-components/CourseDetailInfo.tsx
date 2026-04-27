@@ -3,24 +3,34 @@ import InfoItem from "./InfoItem";
 
 type Props = {
   course: DetailCourseType;
+  buttonChangeEvent: (value: "info" | "students") => void;
 };
 
-function CourseDetailInfo({ course }: Props) {
+function CourseDetailInfo({ course, buttonChangeEvent }: Props) {
   const formatDate = (date: string | null) =>
     date ? new Date(date).toLocaleDateString() : "-";
 
   return (
     <div className="min-h-screen text-white px-16 py-12">
-
-      {/* 제목 */}
       <div className="mb-12">
-        <h1 className="text-3xl font-bold">{course.name}</h1>
-        <div className="mt-4 border-b border-gray-700" />
+        {/* 제목 + 버튼 */}
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold">{course.name}</h1>
+
+          <button
+            onClick={() => buttonChangeEvent("students")}
+            className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-2"
+          >
+            학생 보기 →
+          </button>
+        </div>
+
+        {/* 구분선 */}
+        <div className="border-b border-gray-700" />
       </div>
 
       {/* 상단 2컬럼 */}
       <div className="grid grid-cols-2 gap-16 mb-16">
-
         {/* 기본 정보 */}
         <section>
           <h2 className="text-sm font-semibold text-gray-400 mb-6 uppercase tracking-wider">
@@ -42,11 +52,13 @@ function CourseDetailInfo({ course }: Props) {
 
           <div className="space-y-3 text-sm">
             <InfoItem label="이름" value={course.instructor?.name ?? "미정"} />
-            <InfoItem label="전화번호" value={course.instructor?.phone ?? "-"} />
+            <InfoItem
+              label="전화번호"
+              value={course.instructor?.phone ?? "-"}
+            />
             <InfoItem label="이메일" value={course.instructor?.email ?? "-"} />
           </div>
         </section>
-
       </div>
 
       {/* 수업 설명 */}
@@ -59,7 +71,6 @@ function CourseDetailInfo({ course }: Props) {
           {course.description || "설명이 없습니다."}
         </p>
       </section>
-
     </div>
   );
 }
