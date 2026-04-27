@@ -4,17 +4,22 @@ import { getDetailCourseApi } from "../../api/course/detail-get-course-api";
 import { DetailGetCourseStu } from "../../api/course/detail-get-course-stu-api";
 import CourseDetailInfo from "../../components/course-components/CourseDetailInfo";
 import CourseStudents from "../../components/course-components/CourseStudents";
+import { AnimatePresence, motion } from "framer-motion";
 
 function CourseDetailPage() {
   const { id } = useParams();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = searchParams.get('tab') ?? "info";
+  const tab = searchParams.get("tab") ?? "info";
   const handleTabChange = (value: "info" | "students") => {
-  setSearchParams({ tab: value });
-};
+    setSearchParams({ tab: value });
+  };
 
-
+  const variants = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -10 },
+  };
 
   const detailCourse = useQuery({
     queryKey: ["detail-course", id],
@@ -42,18 +47,38 @@ function CourseDetailPage() {
   return (
     <>
       <section className="font-pretendard font-bold">
-        {tab === "info" && (
-          <CourseDetailInfo
-            buttonChangeEvent={handleTabChange}
-            course={detailCourse.data}
-          ></CourseDetailInfo>
-        )}
-        {tab === "students" && (
-          <CourseStudents
-            buttonChangeEvent={handleTabChange}
-            students={detailStudent.data}
-          ></CourseStudents>
-        )}
+        <AnimatePresence mode="wait">
+          {tab === "info" && (
+            <motion.div
+              key="info"
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <CourseDetailInfo
+                buttonChangeEvent={handleTabChange}
+                course={detailCourse.data}
+              ></CourseDetailInfo>
+            </motion.div>
+          )}
+          {tab === "students" && (
+            <motion.div
+              key="students"
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.2, ease: "easeOut" }} 
+            >
+              <CourseStudents
+                buttonChangeEvent={handleTabChange}
+                students={detailStudent.data}
+              ></CourseStudents>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
     </>
   );
