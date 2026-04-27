@@ -6,31 +6,61 @@ type Props = {
 };
 
 function CourseDetailInfo({ course }: Props) {
+  const formatDate = (date: string | null) =>
+    date ? new Date(date).toLocaleDateString() : "-";
+
   return (
-    <>
-   <div className="p-6 border rounded-2xl shadow bg-gray-700 text-white space-y-6">
-  
-  {/* 제목 */}
-  <h1 className="text-2xl font-bold text-center">{course.name}</h1>
+    <div className="min-h-screen text-white px-16 py-12">
 
-  {/* 기본 정보 */}
-  <div className="divide-y divide-gray-600">
-    <h2 className="text-sm text-gray-400">기본 정보</h2>
+      {/* 제목 */}
+      <div className="mb-12">
+        <h1 className="text-3xl font-bold">{course.name}</h1>
+        <div className="mt-4 border-b border-gray-700" />
+      </div>
 
-    <InfoItem label="시작일" value={course.startDate} />
-    <InfoItem label="종료일" value={course.endDate} />
-    <InfoItem label="강사" value={course.instructor?.name ?? '미정'} />
-    <InfoItem label="수업 개설 날짜" value={new Date(course.createdAt).toLocaleDateString()} />
-  </div>
+      {/* 상단 2컬럼 */}
+      <div className="grid grid-cols-2 gap-16 mb-16">
 
-  {/* 설명 */}
-<div className="bg-gray-800 p-4 rounded-lg">
-  <p className="text-gray-200">
-    {course.description}
-  </p>
-</div>
-</div>
-    </>
+        {/* 기본 정보 */}
+        <section>
+          <h2 className="text-sm font-semibold text-gray-400 mb-6 uppercase tracking-wider">
+            기본 정보
+          </h2>
+
+          <div className="space-y-3 text-sm">
+            <InfoItem label="수업 이름" value={course.name}></InfoItem>
+            <InfoItem label="시작일" value={formatDate(course.startDate)} />
+            <InfoItem label="종료일" value={formatDate(course.endDate)} />
+          </div>
+        </section>
+
+        {/* 강사 정보 */}
+        <section>
+          <h2 className="text-sm font-semibold text-gray-400 mb-6 uppercase tracking-wider">
+            강사 정보
+          </h2>
+
+          <div className="space-y-3 text-sm">
+            <InfoItem label="이름" value={course.instructor?.name ?? "미정"} />
+            <InfoItem label="전화번호" value={course.instructor?.phone ?? "-"} />
+            <InfoItem label="이메일" value={course.instructor?.email ?? "-"} />
+          </div>
+        </section>
+
+      </div>
+
+      {/* 수업 설명 */}
+      <section>
+        <h2 className="text-sm font-semibold text-gray-400 mb-6 uppercase tracking-wider">
+          수업 설명
+        </h2>
+
+        <p className="text-gray-200 leading-relaxed text-sm max-w-3xl">
+          {course.description || "설명이 없습니다."}
+        </p>
+      </section>
+
+    </div>
   );
 }
 
