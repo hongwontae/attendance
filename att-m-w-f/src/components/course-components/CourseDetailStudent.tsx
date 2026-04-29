@@ -1,10 +1,25 @@
-import type { StudentType } from "../../types/student-type/student-type";
+import { useQuery } from "@tanstack/react-query";
+import type { MinimumStudentType } from "../../api/course/detail-get-course-stu-api";
+import { detailStuApi } from "../../api/course/detail-stu-api";
 
 type Props = {
-    student : StudentType
+    student : MinimumStudentType;
+    courseId : number
 }
 
-function CourseDetailStudent({student} : Props){
+function CourseDetailStudent({student, courseId} : Props){
+
+
+    const {data} = useQuery({
+        queryKey : ['student-detail', student.id, courseId],
+        queryFn : ()=> detailStuApi(student.id, courseId)
+    });
+
+    if(!data){
+        return <div>LLL</div>
+    }
+
+    console.log(data);
 
 
 

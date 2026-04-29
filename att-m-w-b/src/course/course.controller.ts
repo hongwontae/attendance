@@ -35,7 +35,6 @@ export class CourseController {
     return await this.courseService.updateCourse(body, id, 1);
   }
 
-
   @Get('one/:id')
   async findOneCourse(@Param('id', ParseIntPipe) id: number) {
     return await this.courseService.findOneCourse(id, 1);
@@ -57,16 +56,14 @@ export class CourseController {
     @Param('id', ParseIntPipe) id: number,
     @CurrentAdmin() adminId: number,
   ) {
-   return await this.courseService.findCourAndStuAndAtt(adminId, id);
+    return await this.courseService.findCourAndStuAndAtt(adminId, id);
   }
-
-
 
   // 실제 브라우저와 연동하는 Controller
   @Get('all')
   @UseGuards(AuthGuard('jwt'))
   async findAllCourse(@CurrentAdmin() adminId: number) {
-    const result =  await this.courseService.findAllCourse(adminId);
+    const result = await this.courseService.findAllCourse(adminId);
     console.log(result);
     return plainToInstance(ResponseShowCourseDto, result);
   }
@@ -74,22 +71,32 @@ export class CourseController {
   @Get('detail/one/:id')
   @UseGuards(AuthGuard('jwt'))
   async findOneCourseAndStudent(
-    @Param('id', ParseIntPipe) courseId : number,
-    @CurrentAdmin() adminId : number
-  ){
-    const course =  await this.courseService.findOneCourse(courseId, adminId);
-    return plainToInstance(ResponseOneCourseDto, course)
-    
+    @Param('id', ParseIntPipe) courseId: number,
+    @CurrentAdmin() adminId: number,
+  ) {
+    const course = await this.courseService.findOneCourse(courseId, adminId);
+    return plainToInstance(ResponseOneCourseDto, course);
   }
 
   @Get('detail/one/stu/:id')
   @UseGuards(AuthGuard('jwt'))
-  async findOneIncludedStudent (
-    @Param('id', ParseIntPipe) courseId : number,
-    @CurrentAdmin() adminId : number
-  ){
-    return await this.courseService.findOneCourIncludeStudent(adminId, courseId)
+  async findOneIncludedStudent(
+    @Param('id', ParseIntPipe) courseId: number,
+    @CurrentAdmin() adminId: number,
+  ) {
+    return await this.courseService.findOneCourIncludeStudent(
+      adminId,
+      courseId,
+    );
   }
 
-
+  @Get('detail/belong/stu/:studentId/:courseId')
+  @UseGuards(AuthGuard('jwt'))
+  async findCourseBelongOneSutent(
+    @Param('studentId', ParseIntPipe) studentId: number,
+    @Param('courseId') courseId: number,
+    @CurrentAdmin() adminId : number
+  ) {
+    return await this.courseService.findCourseBelongOneStudent(studentId, courseId, adminId);
+  }
 }

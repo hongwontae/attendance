@@ -7,7 +7,7 @@ import CourseStudents from "../../components/course-components/CourseStudents";
 import { AnimatePresence, motion } from "framer-motion";
 
 function CourseDetailPage() {
-  const { id } = useParams();
+  const { courseId } = useParams();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") ?? "info";
@@ -22,19 +22,20 @@ function CourseDetailPage() {
   };
 
   const detailCourse = useQuery({
-    queryKey: ["detail-course", id],
-    queryFn: () => getDetailCourseApi(Number(id)),
+    queryKey: ["detail-course", courseId],
+    queryFn: () => getDetailCourseApi(Number(courseId)),
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
     placeholderData: (prev) => prev,
   });
   const detailStudent = useQuery({
-    queryKey: ["detail-course-student", id],
-    queryFn: () => DetailGetCourseStu(Number(id)),
+    queryKey: ["detail-course-student", courseId],
+    queryFn: () => DetailGetCourseStu(Number(courseId)),
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
     placeholderData: (prev) => prev,
   });
+
 
   if (!detailCourse.data) {
     return <div>수업 정보가 없습니다.</div>;
@@ -43,6 +44,8 @@ function CourseDetailPage() {
   if (!detailStudent.data) {
     return <div>학생 정보가 없습니다.</div>;
   }
+
+
 
   return (
     <>
@@ -75,6 +78,7 @@ function CourseDetailPage() {
               <CourseStudents
                 buttonChangeEvent={handleTabChange}
                 students={detailStudent.data}
+                courseId={Number(courseId)}
               ></CourseStudents>
             </motion.div>
           )}

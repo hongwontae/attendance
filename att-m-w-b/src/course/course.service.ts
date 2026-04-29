@@ -134,16 +134,16 @@ export class CourseService {
   }
 
   async findOneCourse(courseId: number, adminId: number) {
-const course = await this.courseRepo
-  .createQueryBuilder('course')
-  .leftJoin('course.enrollments', 'enrollment')
-  .leftJoinAndSelect('course.instructor', 'instructor')
-  .leftJoin('enrollment.student', 'student')
-  .where('course.id = :courseId', { courseId })
-  .andWhere('course.adminId = :adminId', { adminId })
-  .getOne();
+    const course = await this.courseRepo
+      .createQueryBuilder('course')
+      .leftJoin('course.enrollments', 'enrollment')
+      .leftJoinAndSelect('course.instructor', 'instructor')
+      .leftJoin('enrollment.student', 'student')
+      .where('course.id = :courseId', { courseId })
+      .andWhere('course.adminId = :adminId', { adminId })
+      .getOne();
 
-  console.log(course);
+    console.log(course);
 
     if (!course) {
       throw new NotFoundException('수업이 등록되지 않았습니다.');
@@ -159,8 +159,27 @@ const course = await this.courseRepo
       .where('enrollment.courseId = :courseId', { courseId })
       .andWhere('enrollment.adminId = :adminId', { adminId })
       .andWhere('student.adminId = :adminId', { adminId })
+      .select(['student.id', 'student.name'])
       .getMany();
 
     return students;
   }
+
+  async findCourseBelongOneStudent(
+    studentId: number,
+    courseId: number,
+    adminId: number,
+  ) {
+    const student = await this.stuRepo
+      .createQueryBuilder('student')
+      .innerJoin('student.enrollments', 'enrollment')
+      .where('student.id = :studentId', { studentId })
+      .andWhere('enrollment.courseId = :courseId', { courseId })
+      .andWhere('enrollment.adminId = :adminId', { adminId })
+      .andWhere('student.adminId = :adminId', { adminId })
+      .getOne();
+      
+      return student;
+  }
+
 }

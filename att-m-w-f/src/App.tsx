@@ -52,7 +52,7 @@ function App() {
           ),
         },
         {
-          path: "/course/detail/:id",
+          path: "/course/detail/:courseId",
           element: (
             <ProtectRouter>
               <CourseDetailPage></CourseDetailPage>

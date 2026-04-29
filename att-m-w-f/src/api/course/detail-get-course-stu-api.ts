@@ -1,8 +1,13 @@
-import type { StudentType } from "../../types/student-type/student-type";
+
+
+export type MinimumStudentType = {
+  id : number;
+  name : string;
+}
 
 export const DetailGetCourseStu = async (
   courseId: number,
-): Promise<StudentType[]> => {
+): Promise<MinimumStudentType[]> => {
   const response = await fetch(
     `http://localhost:3000/course/detail/one/stu/${courseId}`,
     { method: "GET", credentials: "include" },

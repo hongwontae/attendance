@@ -1,47 +1,61 @@
-import { useState } from "react";
-import type { StudentType } from "../../types/student-type/student-type";
+import { useSearchParams } from "react-router";
+
 import CourseDetailStudent from "./CourseDetailStudent";
+import type { MinimumStudentType } from "../../api/course/detail-get-course-stu-api";
 
 type Props = {
-  students: StudentType[];
+  students: MinimumStudentType[];
   buttonChangeEvent: (value: "info" | "students") => void;
+  courseId : number;
 };
 
-function CourseStudents({ students, buttonChangeEvent }: Props) {
-  const [selectedStudent, setSelectedStudent] = useState<StudentType | null>(
-    null,
-  );
+function CourseStudents({ students, buttonChangeEvent, courseId }: Props) {
+
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const selectedId = searchParams.get("studentId");
+
+  const selectedStudent = students.find((s) => String(s.id) === selectedId);
 
   return (
     <>
-      <div>Hello - Students</div>
-      <button onClick={() => buttonChangeEvent("info")}>Info</button>
+      <section className="p-2">
+        <button onClick={() => buttonChangeEvent("info")}>Info</button>
 
-      <div className="grid grid-cols-[300px_1fr] gap-8">
-        <div>
-          {students &&
-            students.map((s) => {
+        <div className="grid grid-cols-[300px_1fr] gap-8">
+          <div>
+            {students.map((s) => {
+              const isSelected = selectedId === String(s.id);
+
               return (
                 <div
-                  className="p-3 cursor-pointer hover:bg-gray-700"
                   key={s.id}
-                  onClick={() => setSelectedStudent(s)}
+                  onClick={() => {
+                    setSearchParams((prev) => {
+                      prev.set("studentId", String(s.id));
+                      return prev;
+                    });
+                  }}
+                  className={`p-3 cursor-pointer rounded-lg transition
+                  ${isSelected ? "bg-blue-600 text-white" : "hover:bg-gray-700"}
+                `}
                 >
                   {s.name}
                 </div>
               );
             })}
+          </div>
+
+          <div>
+            {selectedStudent ? (
+              <CourseDetailStudent student={selectedStudent} courseId={courseId}/>
+            ) : (
+              <div className="text-gray-500">학생을 선택해주세요 👈</div>
+            )}
+          </div>
         </div>
-        <div>
-          {selectedStudent ? (
-            <CourseDetailStudent
-              student={selectedStudent}
-            ></CourseDetailStudent>
-          ) : (
-            <div className="text-gray-700">학생을 선택해주세요</div>
-          )}
-        </div>
-      </div>
+      </section>
     </>
   );
 }
