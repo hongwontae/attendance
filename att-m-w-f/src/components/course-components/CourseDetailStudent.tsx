@@ -3,33 +3,31 @@ import type { MinimumStudentType } from "../../api/course/detail-get-course-stu-
 import { detailStuApi } from "../../api/course/detail-stu-api";
 
 type Props = {
-    student : MinimumStudentType;
-    courseId : number
-}
+  student: MinimumStudentType;
+  courseId: number;
+};
 
-function CourseDetailStudent({student, courseId} : Props){
+function CourseDetailStudent({ student, courseId }: Props) {
+  const { data } = useQuery({
+    queryKey: ["student-detail", student.id, courseId],
+    queryFn: () => detailStuApi(student.id, courseId),
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    placeholderData: (prev) => prev,
+  });
 
+  if (!data) {
+    return <div>LLL</div>;
+  }
 
-    const {data} = useQuery({
-        queryKey : ['student-detail', student.id, courseId],
-        queryFn : ()=> detailStuApi(student.id, courseId)
-    });
+  console.log(data);
 
-    if(!data){
-        return <div>LLL</div>
-    }
-
-    console.log(data);
-
-
-
-    return (
-        <>
-            <div>Hello-World</div>
-            <div>{student?.name ?? "학생 없음"}</div>
-        </>
-    )
-
+  return (
+    <>
+      <div>Hello-World</div>
+      <div>{student?.name ?? "학생 없음"}</div>
+    </>
+  );
 }
 
 export default CourseDetailStudent;

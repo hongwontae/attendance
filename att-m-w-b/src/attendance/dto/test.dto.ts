@@ -1,9 +1,9 @@
-import { IsEnum, IsInt } from "class-validator";
+import { IsEnum, IsInt, IsString } from "class-validator";
 import { AttendanceStatus } from "../attendance.entity";
 import { Type } from "class-transformer";
 
 
-export class CreateAttDto {
+export class CreateTestAttDto {
 
 
     @IsEnum(AttendanceStatus)
@@ -16,6 +16,9 @@ export class CreateAttDto {
     @IsInt()
     @Type(()=>Number)
     studentId : number;
+
+    @IsString()
+    date : string;
 
 
 }

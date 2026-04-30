@@ -94,7 +94,7 @@ export class CourseController {
   @UseGuards(AuthGuard('jwt'))
   async findCourseBelongOneSutent(
     @Param('studentId', ParseIntPipe) studentId: number,
-    @Param('courseId') courseId: number,
+    @Param('courseId', ParseIntPipe) courseId: number,
     @CurrentAdmin() adminId : number
   ) {
     return await this.courseService.findCourseBelongOneStudent(studentId, courseId, adminId);

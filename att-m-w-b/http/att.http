@@ -1,12 +1,15 @@
-### post att
-Post http://localhost:3000/attendance/create
+### Post Test
+
+post http://localhost:3000/attendance/test/make/att
 Content-Type: application/json
 
 {
-    "date" : "2026-03-22",
+    "studentId" : 2,
+    "courseId" : 1,
     "status" : "present",
-    "enrollmentId" : "9"
+    "date" : "2026-04-23"
 }
 
-### ll
-DELETE http://localhost:3000/attendance/remove
+### TEST
+GET http://localhost:3000/attendance/test/recent/att?courseId=1&studentId=2
+

@@ -7,3 +7,7 @@ GET http://localhost:3000/course/detail/one/1
 ### Test Included Course Student
 GET http://localhost:3000/course/detail/one/stu/1
 
+
+### Test 
+GET http://localhost:3000/course/detail/belong/stu/2/1
+

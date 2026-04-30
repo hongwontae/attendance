@@ -7,6 +7,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { AdminService } from 'src/admin/admin.service';
 import { EnrollmentEntity } from 'src/enrollment/enrollment.entity';
 import { StudentEntity } from 'src/student/student.entity';
+import { AttendanceStatus } from 'src/attendance/attendance.entity';
 
 @Injectable()
 export class CourseService {
@@ -170,16 +171,55 @@ export class CourseService {
     courseId: number,
     adminId: number,
   ) {
-    const student = await this.stuRepo
-      .createQueryBuilder('student')
-      .innerJoin('student.enrollments', 'enrollment')
-      .where('student.id = :studentId', { studentId })
-      .andWhere('enrollment.courseId = :courseId', { courseId })
-      .andWhere('enrollment.adminId = :adminId', { adminId })
-      .andWhere('student.adminId = :adminId', { adminId })
-      .getOne();
-      
-      return student;
+
+const result = await this.stuRepo
+  .createQueryBuilder('student')
+  .innerJoin('student.enrollments', 'enrollment')
+  .leftJoin('enrollment.attendances', 'attendance')
+
+  .where('student.id = :studentId', { studentId })
+  .andWhere('enrollment.courseId = :courseId', { courseId })
+  .andWhere('enrollment.adminId = :adminId', { adminId })
+  .andWhere('student.adminId = :adminId', { adminId })
+
+  .select([
+    'student.id',
+    'student.name',
+    'student.age',
+    'student.phone',
+    'student.pPhone',
+    'student.email',
+    'student.memo'
+  ])
+
+  // 총 출석 수
+  .addSelect('COUNT(attendance.id)', 'totalCount')
+
+  // 출석(PRESENT) 수
+  .addSelect(`
+    SUM(
+      CASE 
+        WHEN attendance.status = :present THEN 1 
+        ELSE 0 
+      END
+    )
+  `, 'presentCount')
+
+  .setParameter('present', AttendanceStatus.PRESENT)
+
+  .groupBy('student.id')
+
+  .getRawOne();
+
+  const total = Number(result.totalCount);
+  const present = Number(result.presentCount);
+
+  let attendanceRate = total === 0 ? 0 : (present / total) * 100;
+  const refineAttendanceReate = Math.round(attendanceRate*10)/10
+
+  return {result, attendanceRate : refineAttendanceReate};
+
   }
+
 
 }
