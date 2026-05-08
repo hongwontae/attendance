@@ -1,6 +1,6 @@
 type Props = {
   label: string;
-  value: string | null;
+  value: string | number |  null;
 };
 function InfoItem({ label, value }: Props) {
   return (

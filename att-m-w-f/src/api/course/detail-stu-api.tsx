@@ -1,9 +1,14 @@
 import type { StudentType } from "../../types/student-type/student-type";
 
+type DetailStudentType = {
+  result : StudentType & {presentCount : number; totalCount : number};
+  attendanceRate : number
+}
+
 export const detailStuApi = async (
   studentId: number,
   courseId: number,
-): Promise<StudentType> => {
+): Promise<DetailStudentType> => {
   const response = await fetch(
     `http://localhost:3000/course/detail/belong/stu/${studentId}/${courseId}`,
     {

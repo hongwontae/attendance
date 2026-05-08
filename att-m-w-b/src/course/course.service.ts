@@ -183,13 +183,13 @@ const result = await this.stuRepo
   .andWhere('student.adminId = :adminId', { adminId })
 
   .select([
-    'student.id',
-    'student.name',
-    'student.age',
-    'student.phone',
-    'student.pPhone',
-    'student.email',
-    'student.memo'
+    'student.id AS id',
+    'student.name AS name',
+    'student.age AS age',
+    'student.phone AS phone',
+    'student.pPhone AS pPhone',
+    'student.email AS email',
+    'student.memo AS memo'
   ])
 
   // 총 출석 수
