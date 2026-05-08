@@ -25,7 +25,7 @@ function StudentInfo({ stuInfo }: props) {
               <div>이름 : {ele.name}</div>
               <div>전화번호 : {ele.phone}</div>
               {ele.courses.map(({ name, id }, idx) => {
-                if(idx === 2){
+                if(idx >= 2){
                     return null
                 }
                 return (
